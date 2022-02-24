@@ -1,0 +1,34 @@
+{
+    "name": "lai3221/amzn_adv_api_php",
+    "type": "library",
+    "description": "Amazon Advertising API Client Library",
+    "keywords": [
+        "amazon",
+        "advertising",
+        "client",
+        "library",
+        "php",
+        "sdk"
+    ],
+    "homepage": "https://advertising.amazon.com/",
+    "license": "Apache-2.0",
+    "minimum-stability": "dev",
+    "authors": [
+        {
+            "name": "Lapaphy",
+            "email": "lai3221@163.com"
+        }
+    ],
+    "autoload": {
+        "psr-4": {
+            "AmazonAdvertisingApi\\": "src/"
+        }
+    },
+    "version": "1.1",
+    "require": {
+        "ext-curl": "*",
+        "ext-json": "*",
+        "ext-zlib": "*",
+        "php": ">=7.1"
+    }
+}
