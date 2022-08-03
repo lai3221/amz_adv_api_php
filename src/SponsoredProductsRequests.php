@@ -3,21 +3,20 @@
 namespace AmazonAdvertisingApi;
 
 use Exception;
+use Illuminate\Support\Facades\Storage;
 
 /**
  * Trait SponsoredProductsRequests
  * Contains requests' wrappers of Amazon Ads API for Sponsored Products
  */
-trait SponsoredProductsRequests
-{
+trait SponsoredProductsRequests {
     /**
      * @param $campaignId
      * @param null|array $data
      * @return array
      * @throws Exception
      */
-    public function getCampaign($campaignId, ?array $data = null)
-    {
+    public function getCampaign($campaignId, ?array $data = null) {
         $type = $this->campaignTypePrefix ?: 'sp';
         if ($this->apiVersion == 'v1') {
             $type = null;
@@ -37,8 +36,7 @@ trait SponsoredProductsRequests
      * @return array
      * @throws Exception
      */
-    public function getCampaignEx($campaignId, ?array $data = null)
-    {
+    public function getCampaignEx($campaignId, ?array $data = null) {
         $type = $this->campaignTypePrefix ?: 'sp';
         if ($this->apiVersion == 'v1') {
             $type = null;
@@ -56,9 +54,8 @@ trait SponsoredProductsRequests
      * @return array
      * @throws Exception
      */
-    public function createCampaigns(array $data)
-    {
-        $type = $this->campaignTypePrefix ?: 'sp';
+    public function createCampaigns(array $data) {
+        $type = $this->getCampaignTypeFromData($data);
         if ($this->apiVersion == 'v1') {
             $type = null;
         } else {
@@ -75,8 +72,7 @@ trait SponsoredProductsRequests
      * @return array
      * @throws Exception
      */
-    public function updateCampaigns(array $data)
-    {
+    public function updateCampaigns(array $data) {
         $type = $this->campaignTypePrefix ?: 'sp';
         if ($this->apiVersion == 'v1') {
             $type = null;
@@ -95,8 +91,7 @@ trait SponsoredProductsRequests
      * @return array
      * @throws Exception
      */
-    public function archiveCampaign($campaignId, ?array $data = null)
-    {
+    public function archiveCampaign($campaignId, ?array $data = null) {
         $type = $this->campaignTypePrefix ?: 'sp';
         if ($this->apiVersion == 'v1') {
             $type = null;
@@ -114,18 +109,14 @@ trait SponsoredProductsRequests
      * @return array
      * @throws Exception
      */
-    public function listCampaigns(?array $data = null)
-    {
+    public function listCampaigns(?array $data = null) {
         $type = $this->getCampaignTypeFromData($data);
         if ($this->apiVersion == 'v1') {
             $type = null;
         } else {
             $type = $type . "/";
         }
-        if (isset($data['campaignType']) && $type === 'hsa/') {
-            unset($data['campaignType']);
-        }
-
+        unset($data['campaignType']);
         if (!$type && $this->apiVersion == 'v2') {
             $this->logAndThrow("Unable to perform request. No type is set");
         }
@@ -137,8 +128,7 @@ trait SponsoredProductsRequests
      * @return array
      * @throws Exception
      */
-    public function listCampaignsEx(?array $data = null)
-    {
+    public function listCampaignsEx(?array $data = null) {
         $type = $this->getCampaignTypeFromData($data);
         if ($this->apiVersion == 'v1') {
             $type = null;
@@ -158,8 +148,7 @@ trait SponsoredProductsRequests
      * @return array
      * @throws Exception
      */
-    public function getAdGroup($adGroupId, ?array $data = null)
-    {
+    public function getAdGroup($adGroupId, ?array $data = null) {
         $type = $this->getCampaignTypeFromData($data);
         if ($this->apiVersion == 'v1') {
             $type = null;
@@ -179,8 +168,7 @@ trait SponsoredProductsRequests
      * @return array
      * @throws Exception
      */
-    public function getAdGroupEx($adGroupId, ?array $data = null)
-    {
+    public function getAdGroupEx($adGroupId, ?array $data = null) {
         $type = $this->getCampaignTypeFromData($data);
         if ($this->apiVersion == 'v1') {
             $type = null;
@@ -199,8 +187,7 @@ trait SponsoredProductsRequests
      * @return array
      * @throws Exception
      */
-    public function createAdGroups(array $data)
-    {
+    public function createAdGroups(array $data) {
         $type = $this->getCampaignTypeFromData($data);
 
         if ($this->apiVersion == 'v1') {
@@ -220,8 +207,7 @@ trait SponsoredProductsRequests
      * @return array
      * @throws Exception
      */
-    public function updateAdGroups(array $data)
-    {
+    public function updateAdGroups(array $data) {
         $type = $this->getCampaignTypeFromData($data);
         if ($this->apiVersion == 'v1') {
             $type = null;
@@ -245,8 +231,7 @@ trait SponsoredProductsRequests
      * @return array
      * @throws Exception
      */
-    public function archiveAdGroup($adGroupId, ?array $data = null)
-    {
+    public function archiveAdGroup($adGroupId, ?array $data = null) {
         $type = $this->getCampaignTypeFromData($data);
         if ($this->apiVersion == 'v1') {
             $type = null;
@@ -265,8 +250,7 @@ trait SponsoredProductsRequests
      * @return array
      * @throws Exception
      */
-    public function listAdGroups(?array $data = null)
-    {
+    public function listAdGroups(?array $data = null) {
         $type = $this->getCampaignTypeFromData($data);
         if ($this->apiVersion == 'v1') {
             $type = null;
@@ -285,8 +269,7 @@ trait SponsoredProductsRequests
      * @return array
      * @throws Exception
      */
-    public function listAdGroupsEx(?array $data = null)
-    {
+    public function listAdGroupsEx(?array $data = null) {
         $type = $this->getCampaignTypeFromData($data);
         if ($this->apiVersion == 'v1') {
             $type = null;
@@ -306,8 +289,7 @@ trait SponsoredProductsRequests
      * @return array
      * @throws Exception
      */
-    public function getBiddableKeyword($keywordId, ?array $data = null)
-    {
+    public function getBiddableKeyword($keywordId, ?array $data = null) {
         $type = $this->campaignTypePrefix ?: 'sp';
         if ($this->apiVersion == 'v1') {
             $type = null;
@@ -327,8 +309,7 @@ trait SponsoredProductsRequests
      * @return array
      * @throws Exception
      */
-    public function getBiddableKeywordEx($keywordId, ?array $data = null)
-    {
+    public function getBiddableKeywordEx($keywordId, ?array $data = null) {
         $type = $this->campaignTypePrefix ?: 'sp';
         if ($this->apiVersion == 'v1') {
             $type = null;
@@ -350,8 +331,7 @@ trait SponsoredProductsRequests
      * @return array
      * @throws Exception
      */
-    public function createBiddableKeywords($data)
-    {
+    public function createBiddableKeywords($data) {
         $type = $this->campaignTypePrefix ?: 'sp';
         if ($this->apiVersion == 'v1') {
             $type = null;
@@ -374,8 +354,7 @@ trait SponsoredProductsRequests
      * @return array
      * @throws Exception
      */
-    public function updateBiddableKeywords(array $data)
-    {
+    public function updateBiddableKeywords(array $data) {
         $type = $this->campaignTypePrefix ?: 'sp';
         if ($this->apiVersion == 'v1') {
             $type = null;
@@ -399,8 +378,7 @@ trait SponsoredProductsRequests
      * @return array
      * @throws Exception
      */
-    public function archiveBiddableKeyword($keywordId, ?array $data = null)
-    {
+    public function archiveBiddableKeyword($keywordId, ?array $data = null) {
         $type = $this->campaignTypePrefix ?: 'sp';
         if ($this->apiVersion == 'v1') {
             $type = null;
@@ -419,8 +397,7 @@ trait SponsoredProductsRequests
      * @return array
      * @throws Exception
      */
-    public function listBiddableKeywords(?array $data = null)
-    {
+    public function listBiddableKeywords(?array $data = null) {
         $type = $this->campaignTypePrefix ?: 'sp';
         if ($this->apiVersion == 'v1') {
             $type = null;
@@ -442,8 +419,7 @@ trait SponsoredProductsRequests
      * @return array
      * @throws Exception
      */
-    public function listBiddableKeywordsEx(?array $data = null)
-    {
+    public function listBiddableKeywordsEx(?array $data = null) {
         $type = $this->campaignTypePrefix ?: 'sp';
         if ($this->apiVersion == 'v1') {
             $type = null;
@@ -463,8 +439,7 @@ trait SponsoredProductsRequests
      * @return array
      * @throws Exception
      */
-    public function getNegativeKeyword($keywordId, ?array $data = null)
-    {
+    public function getNegativeKeyword($keywordId, ?array $data = null) {
         $type = $this->campaignTypePrefix ?: 'sp';
         if ($this->apiVersion == 'v1') {
             $type = null;
@@ -487,8 +462,7 @@ trait SponsoredProductsRequests
      * @return array
      * @throws Exception
      */
-    public function getNegativeKeywordEx($keywordId, ?array $data = null)
-    {
+    public function getNegativeKeywordEx($keywordId, ?array $data = null) {
         $type = $this->campaignTypePrefix ?: 'sp';
         if ($this->apiVersion == 'v1') {
             $type = null;
@@ -510,8 +484,7 @@ trait SponsoredProductsRequests
      * @return array
      * @throws Exception
      */
-    public function createNegativeKeywords(array $data)
-    {
+    public function createNegativeKeywords(array $data) {
         $type = $this->campaignTypePrefix ?: 'sp';
         if ($this->apiVersion == 'v1') {
             $type = null;
@@ -534,8 +507,7 @@ trait SponsoredProductsRequests
      * @return array
      * @throws Exception
      */
-    public function updateNegativeKeywords(array $data)
-    {
+    public function updateNegativeKeywords(array $data) {
         $type = $this->campaignTypePrefix ?: 'sp';
         if ($this->apiVersion == 'v1') {
             $type = null;
@@ -559,8 +531,7 @@ trait SponsoredProductsRequests
      * @return array
      * @throws Exception
      */
-    public function archiveNegativeKeyword($keywordId, ?array $data = null)
-    {
+    public function archiveNegativeKeyword($keywordId, ?array $data = null) {
         $type = $this->campaignTypePrefix ?: 'sp';
         if ($this->apiVersion == 'v1') {
             $type = null;
@@ -582,8 +553,7 @@ trait SponsoredProductsRequests
      * @return array
      * @throws Exception
      */
-    public function listNegativeKeywords(?array $data = null)
-    {
+    public function listNegativeKeywords(?array $data = null) {
         $type = $this->campaignTypePrefix ?: 'sp';
         if ($this->apiVersion == 'v1') {
             $type = null;
@@ -602,8 +572,7 @@ trait SponsoredProductsRequests
      * @return array
      * @throws Exception
      */
-    public function listNegativeKeywordsEx(?array $data = null)
-    {
+    public function listNegativeKeywordsEx(?array $data = null) {
         $type = $this->campaignTypePrefix ?: 'sp';
         if ($this->apiVersion == 'v1') {
             $type = null;
@@ -623,8 +592,7 @@ trait SponsoredProductsRequests
      * @return array
      * @throws Exception
      */
-    public function getCampaignNegativeKeyword($keywordId, ?array $data = null)
-    {
+    public function getCampaignNegativeKeyword($keywordId, ?array $data = null) {
         $type = $this->campaignTypePrefix ?: 'sp';
         if ($this->apiVersion == 'v1') {
             $type = null;
@@ -647,8 +615,7 @@ trait SponsoredProductsRequests
      * @return array
      * @throws Exception
      */
-    public function getCampaignNegativeKeywordEx($keywordId, ?array $data = null)
-    {
+    public function getCampaignNegativeKeywordEx($keywordId, ?array $data = null) {
         $type = $this->campaignTypePrefix ?: 'sp';
         if ($this->apiVersion == 'v1') {
             $type = null;
@@ -670,8 +637,7 @@ trait SponsoredProductsRequests
      * @return array
      * @throws Exception
      */
-    public function createCampaignNegativeKeywords(array $data)
-    {
+    public function createCampaignNegativeKeywords(array $data) {
         $type = $this->campaignTypePrefix ?: 'sp';
         if ($this->apiVersion == 'v1') {
             $type = null;
@@ -694,8 +660,7 @@ trait SponsoredProductsRequests
      * @return array
      * @throws Exception
      */
-    public function updateCampaignNegativeKeywords(array $data)
-    {
+    public function updateCampaignNegativeKeywords(array $data) {
         $type = $this->campaignTypePrefix ?: 'sp';
         if ($this->apiVersion == 'v1') {
             $type = null;
@@ -719,8 +684,7 @@ trait SponsoredProductsRequests
      * @return array
      * @throws Exception
      */
-    public function removeCampaignNegativeKeyword($keywordId, ?array $data = null)
-    {
+    public function removeCampaignNegativeKeyword($keywordId, ?array $data = null) {
         $type = $this->campaignTypePrefix ?: 'sp';
         if ($this->apiVersion == 'v1') {
             $type = null;
@@ -742,8 +706,7 @@ trait SponsoredProductsRequests
      * @return array
      * @throws Exception
      */
-    public function listCampaignNegativeKeywords(?array $data = null)
-    {
+    public function listCampaignNegativeKeywords(?array $data = null) {
         $type = $this->campaignTypePrefix ?: 'sp';
         if ($this->apiVersion == 'v1') {
             $type = null;
@@ -762,8 +725,7 @@ trait SponsoredProductsRequests
      * @return array
      * @throws Exception
      */
-    public function listCampaignNegativeKeywordsEx(?array $data = null)
-    {
+    public function listCampaignNegativeKeywordsEx(?array $data = null) {
         $type = $this->campaignTypePrefix ?: 'sp';
         if ($this->apiVersion == 'v1') {
             $type = null;
@@ -783,8 +745,7 @@ trait SponsoredProductsRequests
      * @return array
      * @throws Exception
      */
-    public function getProductAd($productAdId, ?array $data = null)
-    {
+    public function getProductAd($productAdId, ?array $data = null) {
         $type = $this->getCampaignTypeFromData($data);
         if ($this->apiVersion == 'v1') {
             $type = null;
@@ -807,8 +768,7 @@ trait SponsoredProductsRequests
      * @return array
      * @throws Exception
      */
-    public function getProductAdEx($productAdId, ?array $data = null)
-    {
+    public function getProductAdEx($productAdId, ?array $data = null) {
         $type = $this->getCampaignTypeFromData($data);
         if ($this->apiVersion == 'v1') {
             $type = null;
@@ -830,8 +790,7 @@ trait SponsoredProductsRequests
      * @return array
      * @throws Exception
      */
-    public function createProductAds(array $data)
-    {
+    public function createProductAds(array $data) {
         $type = $this->getCampaignTypeFromData($data);
         if ($this->apiVersion == 'v1') {
             $type = null;
@@ -854,8 +813,7 @@ trait SponsoredProductsRequests
      * @return array
      * @throws Exception
      */
-    public function updateProductAds(array $data)
-    {
+    public function updateProductAds(array $data) {
         $type = $this->getCampaignTypeFromData($data);
         if ($this->apiVersion == 'v1') {
             $type = null;
@@ -879,8 +837,7 @@ trait SponsoredProductsRequests
      * @return array
      * @throws Exception
      */
-    public function archiveProductAd($productAdId, ?array $data = null)
-    {
+    public function archiveProductAd($productAdId, ?array $data = null) {
         $type = $this->getCampaignTypeFromData($data);
         if ($this->apiVersion == 'v1') {
             $type = null;
@@ -902,8 +859,7 @@ trait SponsoredProductsRequests
      * @return array
      * @throws Exception
      */
-    public function listProductAds(?array $data = null)
-    {
+    public function listProductAds(?array $data = null) {
         $type = $this->getCampaignTypeFromData($data);
         if ($this->apiVersion == 'v1') {
             $type = null;
@@ -922,8 +878,7 @@ trait SponsoredProductsRequests
      * @return array
      * @throws Exception
      */
-    public function listProductAdsEx(?array $data = null)
-    {
+    public function listProductAdsEx(?array $data = null) {
         $type = $this->getCampaignTypeFromData($data);
         if ($this->apiVersion == 'v1') {
             $type = null;
@@ -942,8 +897,7 @@ trait SponsoredProductsRequests
      * @return array
      * @throws Exception
      */
-    public function getAdGroupBidRecommendations($adGroupId)
-    {
+    public function getAdGroupBidRecommendations($adGroupId) {
         return $this->operation("adGroups/{$adGroupId}/bidRecommendations");
     }
 
@@ -952,8 +906,7 @@ trait SponsoredProductsRequests
      * @return array
      * @throws Exception
      */
-    public function getKeywordBidRecommendations($keywordId)
-    {
+    public function getKeywordBidRecommendations($keywordId) {
         return $this->operation("keywords/{$keywordId}/bidRecommendations");
     }
 
@@ -963,11 +916,10 @@ trait SponsoredProductsRequests
      * @return array
      * @throws Exception
      */
-    public function bulkGetKeywordBidRecommendations($adGroupId, $data)
-    {
+    public function bulkGetKeywordBidRecommendations($adGroupId, $data) {
         $data = array(
             "adGroupId" => $adGroupId,
-            "keywords" => $data
+            "keywords"  => $data
         );
         return $this->operation("keywords/bidRecommendations", $data, "POST");
     }
@@ -977,8 +929,7 @@ trait SponsoredProductsRequests
      * @return array
      * @throws Exception
      */
-    public function getAdGroupKeywordSuggestions($data)
-    {
+    public function getAdGroupKeywordSuggestions($data) {
         $adGroupId = $data["adGroupId"];
         unset($data["adGroupId"]);
         return $this->operation("adGroups/{$adGroupId}/suggested/keywords", $data);
@@ -989,8 +940,7 @@ trait SponsoredProductsRequests
      * @return array
      * @throws Exception
      */
-    public function getAdGroupKeywordSuggestionsEx(array $data)
-    {
+    public function getAdGroupKeywordSuggestionsEx(array $data) {
         $adGroupId = $data["adGroupId"];
         unset($data["adGroupId"]);
         return $this->operation("adGroups/{$adGroupId}/suggested/keywords/extended", $data);
@@ -1001,8 +951,7 @@ trait SponsoredProductsRequests
      * @return array
      * @throws Exception
      */
-    public function getAsinKeywordSuggestions(array $data)
-    {
+    public function getAsinKeywordSuggestions(array $data) {
         $asin = $data["asin"];
         unset($data["asin"]);
         return $this->operation("asins/{$asin}/suggested/keywords", $data);
@@ -1013,8 +962,7 @@ trait SponsoredProductsRequests
      * @return array
      * @throws Exception
      */
-    public function bulkGetAsinKeywordSuggestions(array $data)
-    {
+    public function bulkGetAsinKeywordSuggestions(array $data) {
         return $this->operation("asins/suggested/keywords", $data, "POST");
     }
 
@@ -1024,8 +972,7 @@ trait SponsoredProductsRequests
      * @return array
      * @throws Exception
      */
-    public function getStores(?array $data = null)
-    {
+    public function getStores(?array $data = null) {
         return $this->operation("stores", $data);
     }
 
@@ -1035,8 +982,7 @@ trait SponsoredProductsRequests
      * @return array
      * @throws Exception
      */
-    public function getStoresByBrandEntityId(int $brandEntityId)
-    {
+    public function getStoresByBrandEntityId(int $brandEntityId) {
         return $this->operation("stores/{$brandEntityId}");
     }
 
@@ -1046,8 +992,7 @@ trait SponsoredProductsRequests
      * @return array
      * @throws Exception
      */
-    public function requestSnapshot($recordType, ?array $data = null)
-    {
+    public function requestSnapshot($recordType, ?array $data = null) {
         return $this->operation("{$recordType}/snapshot", $data, "POST");
     }
 
@@ -1056,8 +1001,7 @@ trait SponsoredProductsRequests
      * @return array
      * @throws Exception
      */
-    public function getSnapshot($snapshotId)
-    {
+    public function getSnapshot($snapshotId) {
         $req = $this->operation("snapshots/{$snapshotId}");
         if ($req["success"]) {
             $json = json_decode($req["response"], true);
@@ -1074,18 +1018,22 @@ trait SponsoredProductsRequests
      * @return array
      * @throws Exception
      */
-    public function requestReport($recordType, ?array $data = null)
-    {
+    public function requestReport($recordType, ?array $data = null) {
         $type = $this->getCampaignTypeForReportRequest($data);
-        if ($this->apiVersion == 'v1') {
+        if ($this->reportsVersion == 'v3') {
             $type = null;
         } else {
-            $type = $type . "/";
+            if ($data['reportType'] != Client::CAMPAIGN_TYPE_SPONSORED_DISPLAY) {
+                $type = $this->reportsVersion . '/' . $type . "/";
+            } else {
+                $type = $type . "/";
+            }
+
             if (is_array($data) && isset($data['reportType'])) {
                 unset($data['reportType']);
             }
         }
-        if (!$type && $this->apiVersion == 'v2') {
+        if (!$type && $this->reportsVersion == 'v2') {
             $this->logAndThrow("Unable to perform request. No type is set");
         }
         return $this->operation($type . "{$recordType}/report", $data, "POST");
@@ -1096,16 +1044,15 @@ trait SponsoredProductsRequests
      * @return string
      * @throws Exception
      */
-    private function getCampaignTypeForReportRequest(?array $data): string
-    {
+    private function getCampaignTypeForReportRequest(?array $data): string {
         $reportType = is_array($data) && isset($data['reportType'])
             ? $data['reportType']
-            : 'sponsoredProducts';
-        if ($reportType === 'sponsoredProducts') {
+            : Client::CAMPAIGN_TYPE_SPONSORED_PRODUCTS;
+        if ($reportType === Client::CAMPAIGN_TYPE_SPONSORED_PRODUCTS) {
             return 'sp';
-        } elseif ($reportType === 'sponsoredBrands') {
+        } elseif ($reportType === Client::CAMPAIGN_TYPE_SPONSORED_BRANDS) {
             return 'hsa';
-        } elseif ($reportType === 'sponsoredDisplay') {
+        } elseif ($reportType === Client::CAMPAIGN_TYPE_SPONSORED_DISPLAY) {
             return 'sd';
         } else {
             throw new Exception("Invalid reportType $reportType");
@@ -1117,9 +1064,15 @@ trait SponsoredProductsRequests
      * @return array
      * @throws Exception
      */
-    public function getReport($reportId)
-    {
-        $req = $this->operation("reports/{$reportId}");
+    public function getReport($reportId) {
+        if ($this->reportsVersion != $this->apiVersion) {
+            $type = $this->reportsVersion . "/";
+        } else {
+            $type = '/';
+        }
+
+        $req = $this->operation($type . "reports/{$reportId}");
+        Storage::disk('logs')->append('getReport', json_encode($req, 256));
         if ($req["success"]) {
             $json = json_decode($req["response"], true);
             if ($json["status"] == "SUCCESS") {
@@ -1136,9 +1089,13 @@ trait SponsoredProductsRequests
      * @return array
      * @throws Exception
      */
-    public function listPortfolios(?array $data = null)
-    {
-        return $this->operation("portfolios", $data);
+    public function listPortfolios(?array $data = null) {
+        if ($this->portfoliosVersion == 'v3') {
+            $type = null;
+        } else {
+            $type = $this->portfoliosVersion . "/";
+        }
+        return $this->operation($type . "portfolios", $data);
     }
 
     /**
@@ -1146,9 +1103,13 @@ trait SponsoredProductsRequests
      * @return array
      * @throws Exception
      */
-    public function listPortfoliosEx(?array $data = null)
-    {
-        return $this->operation("portfolios/extended", $data);
+    public function listPortfoliosEx(?array $data = null) {
+        if ($this->portfoliosVersion == 'v3') {
+            $type = null;
+        } else {
+            $type = $this->portfoliosVersion . "/";
+        }
+        return $this->operation($type . "portfolios/extended", $data);
     }
 
     /**
@@ -1156,9 +1117,13 @@ trait SponsoredProductsRequests
      * @return array
      * @throws Exception
      */
-    public function getPortfolio(int $portfolioId)
-    {
-        return $this->operation('portfolios/' . $portfolioId);
+    public function getPortfolio(int $portfolioId) {
+        if ($this->portfoliosVersion == 'v3') {
+            $type = null;
+        } else {
+            $type = $this->portfoliosVersion . "/";
+        }
+        return $this->operation($type . 'portfolios/' . $portfolioId);
     }
 
     /**
@@ -1166,9 +1131,13 @@ trait SponsoredProductsRequests
      * @return array
      * @throws Exception
      */
-    public function getPortfolioEx(int $portfolioId)
-    {
-        return $this->operation('portfolios/extended/' . $portfolioId);
+    public function getPortfolioEx(int $portfolioId) {
+        if ($this->portfoliosVersion == 'v3') {
+            $type = null;
+        } else {
+            $type = $this->portfoliosVersion . "/";
+        }
+        return $this->operation($type . 'portfolios/extended/' . $portfolioId);
     }
 
     /**
@@ -1176,9 +1145,13 @@ trait SponsoredProductsRequests
      * @return array
      * @throws Exception
      */
-    public function createPortfolios(array $data)
-    {
-        return $this->operation('portfolios', $data, 'POST');
+    public function createPortfolios(array $data) {
+        if ($this->portfoliosVersion == 'v3') {
+            $type = null;
+        } else {
+            $type = $this->portfoliosVersion . "/";
+        }
+        return $this->operation($type . 'portfolios', $data, 'POST');
     }
 
     /**
@@ -1186,9 +1159,13 @@ trait SponsoredProductsRequests
      * @return array
      * @throws Exception
      */
-    public function updatePortfolios(array $data)
-    {
-        return $this->operation('portfolios', $data, 'PUT');
+    public function updatePortfolios(array $data) {
+        if ($this->portfoliosVersion == 'v3') {
+            $type = null;
+        } else {
+            $type = $this->portfoliosVersion . "/";
+        }
+        return $this->operation($type . 'portfolios', $data, 'PUT');
     }
 
     //start of Product Attribute Targeting
@@ -1201,8 +1178,7 @@ trait SponsoredProductsRequests
      * @return array
      * @throws Exception
      */
-    public function generateTargetsProductRecommendations(array $data): array
-    {
+    public function generateTargetsProductRecommendations(array $data): array {
         return $this->operation("sp/targets/productRecommendations", $data, 'POST');
     }
 
@@ -1214,8 +1190,7 @@ trait SponsoredProductsRequests
      * @return array
      * @throws Exception
      */
-    public function getTargetingClause(int $targetId): array
-    {
+    public function getTargetingClause(int $targetId): array {
         return $this->operation("sp/targets/" . $targetId);
     }
 
@@ -1227,8 +1202,7 @@ trait SponsoredProductsRequests
      * @return array
      * @throws Exception
      */
-    public function getTargetingClauseEx(int $targetId): array
-    {
+    public function getTargetingClauseEx(int $targetId): array {
         return $this->operation("sp/targets/extended/" . $targetId);
     }
 
@@ -1240,8 +1214,7 @@ trait SponsoredProductsRequests
      * @return array
      * @throws Exception
      */
-    public function listTargetingClauses(?array $data = null): array
-    {
+    public function listTargetingClauses(?array $data = null): array {
         return $this->operation("sp/targets", $data);
     }
 
@@ -1253,8 +1226,7 @@ trait SponsoredProductsRequests
      * @return array
      * @throws Exception
      */
-    public function listTargetingClausesEx(?array $data = null): array
-    {
+    public function listTargetingClausesEx(?array $data = null): array {
         return $this->operation("sp/targets/extended", $data);
     }
 
@@ -1266,8 +1238,7 @@ trait SponsoredProductsRequests
      * @return array
      * @throws Exception
      */
-    public function createTargetingClauses(array $data): array
-    {
+    public function createTargetingClauses(array $data): array {
         return $this->operation("sp/targets", $data, 'POST');
     }
 
@@ -1279,8 +1250,7 @@ trait SponsoredProductsRequests
      * @return array
      * @throws Exception
      */
-    public function updateTargetingClauses(array $data): array
-    {
+    public function updateTargetingClauses(array $data): array {
         return $this->operation("sp/targets", $data, 'PUT');
     }
 
@@ -1292,8 +1262,7 @@ trait SponsoredProductsRequests
      * @return array
      * @throws Exception
      */
-    public function archiveTargetingClause(int $targetId): array
-    {
+    public function archiveTargetingClause(int $targetId): array {
         return $this->operation("sp/targets/" . $targetId, 'DELETE');
     }
 
@@ -1306,8 +1275,7 @@ trait SponsoredProductsRequests
      * @return array
      * @throws Exception
      */
-    public function getTargetingCategories(array $data): array
-    {
+    public function getTargetingCategories(array $data): array {
         return $this->operation("sp/targets/categories", $data);
     }
 
@@ -1319,8 +1287,7 @@ trait SponsoredProductsRequests
      * @return array
      * @throws Exception
      */
-    public function getBrandRecommendations(array $data): array
-    {
+    public function getBrandRecommendations(array $data): array {
         return $this->operation("sp/targets/brands", $data);
     }
 
@@ -1332,8 +1299,7 @@ trait SponsoredProductsRequests
      * @return array
      * @throws Exception
      */
-    public function getNegativeTargetingClause(int $targetId): array
-    {
+    public function getNegativeTargetingClause(int $targetId): array {
         return $this->operation("sp/negativeTargets/" . $targetId);
     }
 
@@ -1345,8 +1311,7 @@ trait SponsoredProductsRequests
      * @return array
      * @throws Exception
      */
-    public function getNegativeTargetingClauseEx(int $targetId): array
-    {
+    public function getNegativeTargetingClauseEx(int $targetId): array {
         return $this->operation("sp/negativeTargets/extended/" . $targetId);
     }
 
@@ -1358,8 +1323,7 @@ trait SponsoredProductsRequests
      * @return array
      * @throws Exception
      */
-    public function listNegativeTargetingClauses(?array $data = null): array
-    {
+    public function listNegativeTargetingClauses(?array $data = null): array {
         return $this->operation("sp/negativeTargets", $data);
     }
 
@@ -1371,8 +1335,7 @@ trait SponsoredProductsRequests
      * @return array
      * @throws Exception
      */
-    public function listNegativeTargetingClausesEx(?array $data = null): array
-    {
+    public function listNegativeTargetingClausesEx(?array $data = null): array {
         return $this->operation("sp/negativeTargets/extended", $data);
     }
 
@@ -1386,8 +1349,7 @@ trait SponsoredProductsRequests
      * @return array
      * @throws Exception
      */
-    public function createNegativeTargetingClauses(array $data): array
-    {
+    public function createNegativeTargetingClauses(array $data): array {
         return $this->operation("sp/negativeTargets", $data, 'POST');
     }
 
@@ -1399,8 +1361,7 @@ trait SponsoredProductsRequests
      * @return array
      * @throws Exception
      */
-    public function updateNegativeTargetingClauses(array $data): array
-    {
+    public function updateNegativeTargetingClauses(array $data): array {
         return $this->operation("sp/negativeTargets", $data, 'PUT');
     }
 
@@ -1412,8 +1373,7 @@ trait SponsoredProductsRequests
      * @return array
      * @throws Exception
      */
-    public function archiveNegativeTargetingClause(int $targetId): array
-    {
+    public function archiveNegativeTargetingClause(int $targetId): array {
         return $this->operation("sp/negativeTargets/" . $targetId, 'DELETE');
     }
 
@@ -1427,8 +1387,7 @@ trait SponsoredProductsRequests
      * @return array
      * @throws Exception
      */
-    public function getCampaignNegativeTargetingClause(int $targetId): array
-    {
+    public function getCampaignNegativeTargetingClause(int $targetId): array {
         return $this->operation("sp/campaignNegativeTargets/" . $targetId);
     }
 
@@ -1440,8 +1399,7 @@ trait SponsoredProductsRequests
      * @return array
      * @throws Exception
      */
-    public function getCampaignNegativeTargetingClauseEx(int $targetId): array
-    {
+    public function getCampaignNegativeTargetingClauseEx(int $targetId): array {
         return $this->operation("sp/campaignNegativeTargets/extended/" . $targetId);
     }
 
@@ -1453,8 +1411,7 @@ trait SponsoredProductsRequests
      * @return array
      * @throws Exception
      */
-    public function listCampaignNegativeTargetingClauses(?array $data = null): array
-    {
+    public function listCampaignNegativeTargetingClauses(?array $data = null): array {
         return $this->operation("sp/campaignNegativeTargets", $data);
     }
 
@@ -1466,8 +1423,7 @@ trait SponsoredProductsRequests
      * @return array
      * @throws Exception
      */
-    public function listCampaignNegativeTargetingClausesEx(?array $data = null): array
-    {
+    public function listCampaignNegativeTargetingClausesEx(?array $data = null): array {
         return $this->operation("sp/campaignNegativeTargets/extended", $data);
     }
 
@@ -1481,8 +1437,7 @@ trait SponsoredProductsRequests
      * @return array
      * @throws Exception
      */
-    public function createCampaignNegativeTargetingClauses(array $data): array
-    {
+    public function createCampaignNegativeTargetingClauses(array $data): array {
         return $this->operation("sp/campaignNegativeTargets", $data, 'POST');
     }
 
@@ -1494,8 +1449,7 @@ trait SponsoredProductsRequests
      * @return array
      * @throws Exception
      */
-    public function updateCampaignNegativeTargetingClauses(array $data): array
-    {
+    public function updateCampaignNegativeTargetingClauses(array $data): array {
         return $this->operation("sp/campaignNegativeTargets", $data, 'PUT');
     }
 
@@ -1507,8 +1461,7 @@ trait SponsoredProductsRequests
      * @return array
      * @throws Exception
      */
-    public function archiveCampaignNegativeTargetingClause(int $targetId): array
-    {
+    public function archiveCampaignNegativeTargetingClause(int $targetId): array {
         return $this->operation("sp/campaignNegativeTargets/" . $targetId, 'DELETE');
     }
 }

@@ -8,7 +8,7 @@ namespace AmazonAdvertisingApi;
 class Versions
 {
     public $versionStrings = array(
-        "apiVersion"         => "v2",
+        "apiVersion"         => "v3",
         "applicationVersion" => "1.2"
     );
 }

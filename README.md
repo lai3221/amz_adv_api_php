@@ -979,12 +979,12 @@ $client->getSnapshot("amzn1.clicksAPI.v1.p1.573A0477.ec41773a-1659-4013-8eb9-fa1
 ---
 #### requestReport
 > Request a customized performance report for all entities of a single type which have performance data to report.
-
+campaignType enum:sb, sd, sp
 ```PHP
 $client->requestReport(
     "campaigns",
     array("reportDate" => "20160515",
-          "campaignType" => "sponsoredProducts",
+          "campaignType" => "sp",
           "metrics" => "impressions,clicks,cost"));
 ```
 >

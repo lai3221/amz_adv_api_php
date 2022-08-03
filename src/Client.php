@@ -25,9 +25,12 @@ class Client
     use ProductEligibilityRequests;
     use ProfileRequests;
 
-    public const CAMPAIGN_TYPE_SPONSORED_PRODUCTS = 'sponsoredProducts';
-    public const CAMPAIGN_TYPE_SPONSORED_BRANDS = 'sponsoredBrands';
-    public const CAMPAIGN_TYPE_SPONSORED_DISPLAY = 'sponsoredDisplay';
+    public const CAMPAIGN_TYPE_SPONSORED_PRODUCTS_FULL = 'sponsoredProducts';
+    public const CAMPAIGN_TYPE_SPONSORED_BRANDS_FULL = 'sponsoredBrands';
+    public const CAMPAIGN_TYPE_SPONSORED_DISPLAY_FULL = 'sponsoredDisplay';
+    public const CAMPAIGN_TYPE_SPONSORED_PRODUCTS = 'sp';
+    public const CAMPAIGN_TYPE_SPONSORED_BRANDS = 'sb';
+    public const CAMPAIGN_TYPE_SPONSORED_DISPLAY = 'sd';
 
     private $config = [
         'clientId' => null,
@@ -36,14 +39,29 @@ class Client
         'accessToken' => null,
         'refreshToken' => null,
         'sandbox' => false,
-        'saveFile' => false,
+        'saveFile' => true,
         'apiVersion' => 'v1',
+        'sbVersion' => 'v1',
+        'sdVersion' => 'v1',
+        'spVersion' => 'v1',
+        'portfoliosVersion' => 'v1',
+        'reportsVersion' => 'v2',
         'deleteGzipFile' => false,
+        'isUseProxy'=>false,
+        'guzzleProxy'=>'',
+        'curlProxy'=>'',
+        'appUserAgent'=>''
     ];
 
     private $apiVersion = null;
+    private $sbVersion = null;
+    private $sdVersion = null;
+    private $spVersion = null;
+    private $portfoliosVersion = null;
+    private $reportsVersion = null;
     private $applicationVersion = null;
     private $userAgent = null;
+    private $isUseProxy = false;
     private $endpoint = null;
     private $tokenUrl = null;
     private $requestId = null;
@@ -62,16 +80,22 @@ class Client
      */
     public function __construct($config)
     {
+        $this->config = $config;
         $regions = new Regions();
         $this->endpoints = $regions->endpoints;
-
         $versions = new Versions();
         $this->versionStrings = $versions->versionStrings;
         $this->apiVersion = $config['apiVersion'] ?? null;
+        $this->sbVersion = $config['sbVersion'] ?? '';
+        $this->sbVersion = $config['sdVersion'] ?? '';
+        $this->spVersion = $config['spVersion'] ?? '';
+        $this->portfoliosVersion = $config['portfoliosVersion'] ?? '';
+        $this->reportsVersion = $config['reportsVersion'] ?? '';
 
         $this->apiVersion = is_null($this->apiVersion) ? $this->versionStrings["apiVersion"] : $this->apiVersion;
         $this->applicationVersion = $this->versionStrings["applicationVersion"];
-        $this->userAgent = "AdvertisingAPI PHP Client Library v{$this->applicationVersion}";
+        $this->userAgent = $this->config['appUserAgent'];
+
 
         $this->validateConfig($config);
         $this->validateConfigParameters();
@@ -98,8 +122,7 @@ class Client
      * @return array
      * @throws Exception
      */
-    public function doRefreshToken()
-    {
+    public function doRefreshToken(): array {
         $headers = array(
             "Content-Type: application/x-www-form-urlencoded;charset=UTF-8",
             "User-Agent: {$this->userAgent}"
@@ -121,7 +144,7 @@ class Client
 
         $url = "https://{$this->tokenUrl}";
 
-        $request = new CurlRequest();
+        $request = new CurlRequest($this->config);
         $request->setOption(CURLOPT_URL, $url);
         $request->setOption(CURLOPT_HTTPHEADER, $headers);
         $request->setOption(CURLOPT_USERAGENT, $this->userAgent);
@@ -146,8 +169,7 @@ class Client
      * @param bool $gunzip
      * @return array
      */
-    private function download($location, $gunzip = false)
-    {
+    private function download($location, $gunzip = false): array {
         $headers = array();
 
         if (!$gunzip) {
@@ -159,7 +181,7 @@ class Client
             array_push($headers, "Amazon-Advertising-API-Scope: {$this->profileId}");
         }
 
-        $request = new CurlRequest();
+        $request = new CurlRequest($this->config);
         $request->setOption(CURLOPT_URL, $location);
         $request->setOption(CURLOPT_HTTPHEADER, $headers);
         $request->setOption(CURLOPT_USERAGENT, $this->userAgent);
@@ -243,12 +265,10 @@ class Client
         }
 
         $this->headers = $headers;
-
-        $request = new CurlRequest();
+        $request = new CurlRequest($this->config);
         $this->endpoint = trim($this->endpoint, "/");
         $url = "{$this->endpoint}/{$interface}";
         $this->requestId = null;
-
         switch (strtolower($method)) {
             case "get":
                 if (!empty($params)) {
@@ -271,7 +291,6 @@ class Client
             default:
                 $this->logAndThrow("Unknown verb {$method}.");
         }
-
         $request->setOption(CURLOPT_URL, $url);
         $request->setOption(CURLOPT_HTTPHEADER, $headers);
         $request->setOption(CURLOPT_USERAGENT, $this->userAgent);
@@ -325,8 +344,7 @@ class Client
      * @return bool
      * @throws Exception
      */
-    private function validateConfig($config)
-    {
+    private function validateConfig($config): bool {
         if (is_null($config)) {
             $this->logAndThrow("'config' cannot be null.");
         }
@@ -345,8 +363,7 @@ class Client
      * @return bool
      * @throws Exception
      */
-    private function validateConfigParameters()
-    {
+    private function validateConfigParameters(): bool {
         foreach ($this->config as $k => $v) {
             if (is_null($v) && $k !== "accessToken" && $k !== "refreshToken") {
                 $this->logAndThrow("Missing required parameter '{$k}'.");
@@ -395,15 +412,14 @@ class Client
      * @return bool
      * @throws Exception
      */
-    private function setEndpoints()
-    {
+    private function setEndpoints(): bool {
         /* check if region exists and set api/token endpoints */
         if (array_key_exists(strtolower($this->config["region"]), $this->endpoints)) {
             $region_code = strtolower($this->config["region"]);
             if ($this->config["sandbox"]) {
-                $this->endpoint = "https://{$this->endpoints[$region_code]["sandbox"]}/{$this->apiVersion}";
+                $this->endpoint = "https://{$this->endpoints[$region_code]["sandbox"]}/";
             } else {
-                $this->endpoint = "https://{$this->endpoints[$region_code]["prod"]}/{$this->apiVersion}";
+                $this->endpoint = "https://{$this->endpoints[$region_code]["prod"]}/";
             }
             $this->tokenUrl = $this->endpoints[$region_code]["tokenUrl"];
         } else {
@@ -428,19 +444,22 @@ class Client
     protected function getCampaignTypeFromData(?array $data): string
     {
         if (empty($data)) {
-            return static::CAMPAIGN_TYPE_SPONSORED_PRODUCTS;
+            return static::CAMPAIGN_TYPE_SPONSORED_BRANDS;
         }
         $campaignType = is_array($data) && isset($data['campaignType'])
             ? $data['campaignType']
-            : static::CAMPAIGN_TYPE_SPONSORED_PRODUCTS;
-        if ($campaignType === static::CAMPAIGN_TYPE_SPONSORED_PRODUCTS) {
+            : static::CAMPAIGN_TYPE_SPONSORED_BRANDS;
+        if ($campaignType === static::CAMPAIGN_TYPE_SPONSORED_PRODUCTS || $campaignType === static::CAMPAIGN_TYPE_SPONSORED_PRODUCTS_FULL) {
+            if(strtolower($this->spVersion) == 'v2'){
+                $this->endpoint .= 'v2/';
+            }
             return 'sp';
-        } elseif ($campaignType === static::CAMPAIGN_TYPE_SPONSORED_BRANDS) {
-            return 'hsa';
-        } elseif ($campaignType === static::CAMPAIGN_TYPE_SPONSORED_DISPLAY) {
+        } elseif ($campaignType === static::CAMPAIGN_TYPE_SPONSORED_BRANDS || $campaignType === static::CAMPAIGN_TYPE_SPONSORED_BRANDS_FULL) {
+            return 'sb';
+        } elseif ($campaignType === static::CAMPAIGN_TYPE_SPONSORED_DISPLAY || $campaignType === static::CAMPAIGN_TYPE_SPONSORED_DISPLAY_FULL) {
             return 'sd';
         } else {
-            return 'sp';
+            return 'sb';
         }
     }
 }
