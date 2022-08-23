@@ -3,7 +3,6 @@
 namespace AmazonAdvertisingApi;
 
 use Exception;
-use Illuminate\Support\Facades\Storage;
 
 /**
  * Trait SponsoredProductsRequests
@@ -12,21 +11,11 @@ use Illuminate\Support\Facades\Storage;
 trait SponsoredProductsRequests {
     /**
      * @param $campaignId
-     * @param null|array $data
      * @return array
-     * @throws Exception
      */
-    public function getCampaign($campaignId, ?array $data = null) {
+    public function getCampaign($campaignId): array {
         $type = $this->campaignTypePrefix ?: 'sp';
-        if ($this->apiVersion == 'v1') {
-            $type = null;
-        } else {
-            $type = $type . "/";
-        }
-        if (!$type && $this->apiVersion == 'v2') {
-            $this->logAndThrow("Unable to perform request. No type is set");
-        }
-
+        $type = $this->spVersion == 'v3' ? $type : "v2/" . $type . "/";
         return $this->operation($type . "campaigns/{$campaignId}");
     }
 
@@ -36,16 +25,9 @@ trait SponsoredProductsRequests {
      * @return array
      * @throws Exception
      */
-    public function getCampaignEx($campaignId, ?array $data = null) {
+    public function getCampaignEx($campaignId, ?array $data = null): array {
         $type = $this->campaignTypePrefix ?: 'sp';
-        if ($this->apiVersion == 'v1') {
-            $type = null;
-        } else {
-            $type = $type . "/";
-        }
-        if (!$type && $this->apiVersion == 'v2') {
-            $this->logAndThrow("Unable to perform request. No type is set");
-        }
+        $type = $this->spVersion == 'v3' ? $type : "v2/" . $type . "/";
         return $this->operation($type . "campaigns/extended/{$campaignId}");
     }
 
@@ -54,16 +36,9 @@ trait SponsoredProductsRequests {
      * @return array
      * @throws Exception
      */
-    public function createCampaigns(array $data) {
-        $type = $this->getCampaignTypeFromData($data);
-        if ($this->apiVersion == 'v1') {
-            $type = null;
-        } else {
-            $type = $type . "/";
-        }
-        if (!$type && $this->apiVersion == 'v2') {
-            $this->logAndThrow("Unable to perform request. No type is set");
-        }
+    public function createCampaigns(array $data): array {
+        $type = $this->campaignTypePrefix ?: 'sp';
+        $type = $this->spVersion == 'v3' ? $type : "v2/" . $type . "/";
         return $this->operation($type . "campaigns", $data, "POST");
     }
 
@@ -72,16 +47,9 @@ trait SponsoredProductsRequests {
      * @return array
      * @throws Exception
      */
-    public function updateCampaigns(array $data) {
+    public function updateCampaigns(array $data): array {
         $type = $this->campaignTypePrefix ?: 'sp';
-        if ($this->apiVersion == 'v1') {
-            $type = null;
-        } else {
-            $type = $type . "/";
-        }
-        if (!$type && $this->apiVersion == 'v2') {
-            $this->logAndThrow("Unable to perform request. No type is set");
-        }
+        $type = $this->spVersion == 'v3' ? $type : "v2/" . $type . "/";
         return $this->operation($type . "campaigns", $data, "PUT");
     }
 
@@ -91,16 +59,9 @@ trait SponsoredProductsRequests {
      * @return array
      * @throws Exception
      */
-    public function archiveCampaign($campaignId, ?array $data = null) {
+    public function archiveCampaign($campaignId, ?array $data = null): array {
         $type = $this->campaignTypePrefix ?: 'sp';
-        if ($this->apiVersion == 'v1') {
-            $type = null;
-        } else {
-            $type = $type . "/";
-        }
-        if (!$type && $this->apiVersion == 'v2') {
-            $this->logAndThrow("Unable to perform request. No type is set");
-        }
+        $type = $this->spVersion == 'v3' ? $type : "v2/" . $type . "/";
         return $this->operation($type . "campaigns/{$campaignId}", null, "DELETE");
     }
 
@@ -110,16 +71,8 @@ trait SponsoredProductsRequests {
      * @throws Exception
      */
     public function listCampaigns(?array $data = null) {
-        $type = $this->getCampaignTypeFromData($data);
-        if ($this->apiVersion == 'v1') {
-            $type = null;
-        } else {
-            $type = $type . "/";
-        }
-        unset($data['campaignType']);
-        if (!$type && $this->apiVersion == 'v2') {
-            $this->logAndThrow("Unable to perform request. No type is set");
-        }
+        $type = $this->campaignTypePrefix ?: 'sp';
+        $type = $this->spVersion == 'v3' ? $type : "v2/" . $type . "/";
         return $this->operation($type . "campaigns", $data);
     }
 
@@ -129,15 +82,11 @@ trait SponsoredProductsRequests {
      * @throws Exception
      */
     public function listCampaignsEx(?array $data = null) {
-        $type = $this->getCampaignTypeFromData($data);
-        if ($this->apiVersion == 'v1') {
+        $type = $this->campaignTypePrefix ?: 'sp';
+        if ($this->spVersion == 'v3') {
             $type = null;
         } else {
-            $type = $type . "/";
-        }
-
-        if (!$type && $this->apiVersion == 'v2') {
-            $this->logAndThrow("Unable to perform request. No type is set");
+            $type = "v2/" . $type . "/";
         }
         return $this->operation($type . "campaigns/extended", $data);
     }
@@ -149,15 +98,11 @@ trait SponsoredProductsRequests {
      * @throws Exception
      */
     public function getAdGroup($adGroupId, ?array $data = null) {
-        $type = $this->getCampaignTypeFromData($data);
-        if ($this->apiVersion == 'v1') {
+        $type = $this->campaignTypePrefix ?: 'sp';
+        if ($this->spVersion == 'v3') {
             $type = null;
         } else {
-            $type = $type . "/";
-        }
-
-        if (!$type && $this->apiVersion == 'v2') {
-            $this->logAndThrow("Unable to perform request. No type is set");
+            $type = "v2/" . $type . "/";
         }
         return $this->operation($type . "adGroups/{$adGroupId}");
     }
@@ -169,13 +114,13 @@ trait SponsoredProductsRequests {
      * @throws Exception
      */
     public function getAdGroupEx($adGroupId, ?array $data = null) {
-        $type = $this->getCampaignTypeFromData($data);
-        if ($this->apiVersion == 'v1') {
+        //$type = $this->getCampaignTypeFromData($data);
+        $type = $this->campaignTypePrefix ?: 'sp';
+        if ($this->spVersion == 'v3') {
             $type = null;
         } else {
-            $type = $type . "/";
+            $type = "v2/" . $type . "/";
         }
-
         if (!$type && $this->apiVersion == 'v2') {
             $this->logAndThrow("Unable to perform request. No type is set");
         }
@@ -188,14 +133,13 @@ trait SponsoredProductsRequests {
      * @throws Exception
      */
     public function createAdGroups(array $data) {
-        $type = $this->getCampaignTypeFromData($data);
-
-        if ($this->apiVersion == 'v1') {
+        //$type = $this->getCampaignTypeFromData($data);
+        $type = $this->campaignTypePrefix ?: 'sp';
+        if ($this->spVersion == 'v3') {
             $type = null;
         } else {
-            $type = $type . "/";
+            $type = "v2/" . $type . "/";
         }
-
         if (!$type && $this->apiVersion == 'v2') {
             $this->logAndThrow("Unable to perform request. No type is set");
         }
@@ -208,17 +152,17 @@ trait SponsoredProductsRequests {
      * @throws Exception
      */
     public function updateAdGroups(array $data) {
-        $type = $this->getCampaignTypeFromData($data);
-        if ($this->apiVersion == 'v1') {
+       // $type = $this->getCampaignTypeFromData($data);
+        $type = $this->campaignTypePrefix ?: 'sp';
+        if ($this->spVersion == 'v3') {
             $type = null;
         } else {
             if (isset($data['campaignType'])) {
                 unset($data['campaignType']);
                 $data = array_values($data);
             }
-            $type = $type . "/";
+            $type = "v2/" . $type . "/";
         }
-
         if (!$type && $this->apiVersion == 'v2') {
             $this->logAndThrow("Unable to perform request. No type is set");
         }
@@ -232,11 +176,11 @@ trait SponsoredProductsRequests {
      * @throws Exception
      */
     public function archiveAdGroup($adGroupId, ?array $data = null) {
-        $type = $this->getCampaignTypeFromData($data);
-        if ($this->apiVersion == 'v1') {
+        $type = $this->campaignTypePrefix ?: 'sp';
+        if ($this->spVersion == 'v3') {
             $type = null;
         } else {
-            $type = $type . "/";
+            $type = "v2/" . $type . "/";
         }
 
         if (!$type && $this->apiVersion == 'v2') {
@@ -251,11 +195,11 @@ trait SponsoredProductsRequests {
      * @throws Exception
      */
     public function listAdGroups(?array $data = null) {
-        $type = $this->getCampaignTypeFromData($data);
-        if ($this->apiVersion == 'v1') {
+        $type = $this->campaignTypePrefix ?: 'sp';
+        if ($this->spVersion == 'v3') {
             $type = null;
         } else {
-            $type = $type . "/";
+            $type = "v2/" . $type . "/";
         }
 
         if (!$type && $this->apiVersion == 'v2') {
@@ -270,13 +214,12 @@ trait SponsoredProductsRequests {
      * @throws Exception
      */
     public function listAdGroupsEx(?array $data = null) {
-        $type = $this->getCampaignTypeFromData($data);
-        if ($this->apiVersion == 'v1') {
+        $type = $this->campaignTypePrefix ?: 'sp';
+        if ($this->spVersion == 'v3') {
             $type = null;
         } else {
-            $type = $type . "/";
+            $type = "v2/" . $type . "/";
         }
-
         if (!$type && $this->apiVersion == 'v2') {
             $this->logAndThrow("Unable to perform request. No type is set");
         }
@@ -291,12 +234,11 @@ trait SponsoredProductsRequests {
      */
     public function getBiddableKeyword($keywordId, ?array $data = null) {
         $type = $this->campaignTypePrefix ?: 'sp';
-        if ($this->apiVersion == 'v1') {
+        if ($this->spVersion == 'v3') {
             $type = null;
         } else {
-            $type = $type . "/";
+            $type = "v2/" . $type . "/";
         }
-
         if (!$type && $this->apiVersion == 'v2') {
             $this->logAndThrow("Unable to perform request. No type is set");
         }
@@ -311,15 +253,11 @@ trait SponsoredProductsRequests {
      */
     public function getBiddableKeywordEx($keywordId, ?array $data = null) {
         $type = $this->campaignTypePrefix ?: 'sp';
-        if ($this->apiVersion == 'v1') {
+        if ($this->spVersion == 'v3') {
             $type = null;
         } else {
-            if (isset($data['campaignType'])) {
-                unset($data['campaignType']);
-            }
-            $type = $type . "/";
+            $type = "v2/" . $type . "/";
         }
-
         if (!$type && $this->apiVersion == 'v2') {
             $this->logAndThrow("Unable to perform request. No type is set");
         }
@@ -340,9 +278,8 @@ trait SponsoredProductsRequests {
                 unset($data['campaignType']);
                 $data = array_values($data);
             }
-            $type = $type . "/";
+            $type = "v2/" . $type . "/";
         }
-
         if (!$type && $this->apiVersion == 'v2') {
             $this->logAndThrow("Unable to perform request. No type is set");
         }
@@ -363,9 +300,8 @@ trait SponsoredProductsRequests {
                 unset($data['campaignType']);
                 $data = array_values($data);
             }
-            $type = $type . "/";
+            $type = "v2/" . $type . "/";
         }
-
         if (!$type && $this->apiVersion == 'v2') {
             $this->logAndThrow("Unable to perform request. No type is set");
         }
@@ -380,10 +316,10 @@ trait SponsoredProductsRequests {
      */
     public function archiveBiddableKeyword($keywordId, ?array $data = null) {
         $type = $this->campaignTypePrefix ?: 'sp';
-        if ($this->apiVersion == 'v1') {
+        if ($this->spVersion == 'v3') {
             $type = null;
         } else {
-            $type = $type . "/";
+            $type = "v2/" . $type . "/";
         }
 
         if (!$type && $this->apiVersion == 'v2') {
@@ -405,9 +341,8 @@ trait SponsoredProductsRequests {
             if (isset($data['campaignType'])) {
                 unset($data['campaignType']);
             }
-            $type = $type . "/";
+            $type = "v2/" . $type . "/";
         }
-
         if (!$type && $this->apiVersion == 'v2') {
             $this->logAndThrow("Unable to perform request. No type is set");
         }
@@ -421,10 +356,10 @@ trait SponsoredProductsRequests {
      */
     public function listBiddableKeywordsEx(?array $data = null) {
         $type = $this->campaignTypePrefix ?: 'sp';
-        if ($this->apiVersion == 'v1') {
+        if ($this->spVersion == 'v3') {
             $type = null;
         } else {
-            $type = $type . "/";
+            $type = "v2/" . $type . "/";
         }
 
         if (!$type && $this->apiVersion == 'v2') {
@@ -447,9 +382,8 @@ trait SponsoredProductsRequests {
             if (isset($data['campaignType'])) {
                 unset($data['campaignType']);
             }
-            $type = $type . "/";
+            $type = "v2/" . $type . "/";
         }
-
         if (!$type && $this->apiVersion == 'v2') {
             $this->logAndThrow("Unable to perform request. No type is set");
         }
@@ -470,7 +404,7 @@ trait SponsoredProductsRequests {
             if (isset($data['campaignType'])) {
                 unset($data['campaignType']);
             }
-            $type = $type . "/";
+            $type = "v2/". $type . "/";
         }
 
         if (!$type && $this->apiVersion == 'v2') {
@@ -493,7 +427,7 @@ trait SponsoredProductsRequests {
                 unset($data['campaignType']);
                 $data = array_values($data);
             }
-            $type = $type . "/";
+            $type = "v2/" . $type . "/";
         }
 
         if (!$type && $this->apiVersion == 'v2') {
@@ -516,7 +450,7 @@ trait SponsoredProductsRequests {
                 unset($data['campaignType']);
                 $data = array_values($data);
             }
-            $type = $type . "/";
+            $type = "v2/" . $type . "/";
         }
 
         if (!$type && $this->apiVersion == 'v2') {
@@ -538,8 +472,9 @@ trait SponsoredProductsRequests {
         } else {
             if (isset($data['campaignType'])) {
                 unset($data['campaignType']);
+                $data = array_values($data);
             }
-            $type = $type . "/";
+            $type = "v2/" . $type . "/";
         }
 
         if (!$type && $this->apiVersion == 'v2') {
@@ -558,7 +493,7 @@ trait SponsoredProductsRequests {
         if ($this->apiVersion == 'v1') {
             $type = null;
         } else {
-            $type = $type . "/";
+            $type = "v2/" . $type . "/";
         }
 
         if (!$type && $this->apiVersion == 'v2') {
@@ -577,9 +512,8 @@ trait SponsoredProductsRequests {
         if ($this->apiVersion == 'v1') {
             $type = null;
         } else {
-            $type = $type . "/";
+            $type = "v2/" . $type . "/";
         }
-
         if (!$type && $this->apiVersion == 'v2') {
             $this->logAndThrow("Unable to perform request. No type is set");
         }
@@ -597,10 +531,7 @@ trait SponsoredProductsRequests {
         if ($this->apiVersion == 'v1') {
             $type = null;
         } else {
-            if (isset($data['campaignType'])) {
-                unset($data['campaignType']);
-            }
-            $type = $type . "/";
+            $type = "v2/" . $type . "/";
         }
 
         if (!$type && $this->apiVersion == 'v2') {
@@ -623,9 +554,8 @@ trait SponsoredProductsRequests {
             if (isset($data['campaignType'])) {
                 unset($data['campaignType']);
             }
-            $type = $type . "/";
+            $type = "v2/" . $type . "/";
         }
-
         if (!$type && $this->apiVersion == 'v2') {
             $this->logAndThrow("Unable to perform request. No type is set");
         }
@@ -746,18 +676,10 @@ trait SponsoredProductsRequests {
      * @throws Exception
      */
     public function getProductAd($productAdId, ?array $data = null) {
-        $type = $this->getCampaignTypeFromData($data);
-        if ($this->apiVersion == 'v1') {
-            $type = null;
-        } else {
-            if (isset($data['campaignType'])) {
-                unset($data['campaignType']);
-            }
-            $type = $type . "/";
-        }
-
-        if (!$type && $this->apiVersion == 'v2') {
-            $this->logAndThrow("Unable to perform request. No type is set");
+        $type = $this->campaignTypePrefix ?: 'sp';
+        $type = $this->spVersion == 'v3' ? $type : "v2/" . $type . "/";
+        if (isset($data['campaignType'])) {
+            unset($data['campaignType']);
         }
         return $this->operation($type . "productAds/{$productAdId}");
     }
@@ -769,18 +691,10 @@ trait SponsoredProductsRequests {
      * @throws Exception
      */
     public function getProductAdEx($productAdId, ?array $data = null) {
-        $type = $this->getCampaignTypeFromData($data);
-        if ($this->apiVersion == 'v1') {
-            $type = null;
-        } else {
-            if (isset($data['campaignType'])) {
-                unset($data['campaignType']);
-            }
-            $type = $type . "/";
-        }
-
-        if (!$type && $this->apiVersion == 'v2') {
-            $this->logAndThrow("Unable to perform request. No type is set");
+        $type = $this->campaignTypePrefix ?: 'sp';
+        $type = $this->spVersion == 'v3' ? $type : "v2/" . $type . "/";
+        if (isset($data['campaignType'])) {
+            unset($data['campaignType']);
         }
         return $this->operation("productAds/extended/{$productAdId}");
     }
@@ -791,19 +705,10 @@ trait SponsoredProductsRequests {
      * @throws Exception
      */
     public function createProductAds(array $data) {
-        $type = $this->getCampaignTypeFromData($data);
-        if ($this->apiVersion == 'v1') {
-            $type = null;
-        } else {
-            if (isset($data['campaignType'])) {
-                unset($data['campaignType']);
-                $data = array_values($data);
-            }
-            $type = $type . "/";
-        }
-
-        if (!$type && $this->apiVersion == 'v2') {
-            $this->logAndThrow("Unable to perform request. No type is set");
+        $type = $this->campaignTypePrefix ?: 'sp';
+        $type = $this->spVersion == 'v3' ? $type : "v2/" . $type . "/";
+        if (isset($data['campaignType'])) {
+            unset($data['campaignType']);
         }
         return $this->operation($type . "productAds", $data, "POST");
     }
@@ -814,19 +719,10 @@ trait SponsoredProductsRequests {
      * @throws Exception
      */
     public function updateProductAds(array $data) {
-        $type = $this->getCampaignTypeFromData($data);
-        if ($this->apiVersion == 'v1') {
-            $type = null;
-        } else {
-            if (isset($data['campaignType'])) {
-                unset($data['campaignType']);
-                $data = array_values($data);
-            }
-            $type = $type . "/";
-        }
-
-        if (!$type && $this->apiVersion == 'v2') {
-            $this->logAndThrow("Unable to perform request. No type is set");
+        $type = $this->campaignTypePrefix ?: 'sp';
+        $type = $this->spVersion == 'v3' ? $type : "v2/" . $type . "/";
+        if (isset($data['campaignType'])) {
+            unset($data['campaignType']);
         }
         return $this->operation($type . "productAds", $data, "PUT");
     }
@@ -838,18 +734,10 @@ trait SponsoredProductsRequests {
      * @throws Exception
      */
     public function archiveProductAd($productAdId, ?array $data = null) {
-        $type = $this->getCampaignTypeFromData($data);
-        if ($this->apiVersion == 'v1') {
-            $type = null;
-        } else {
-            if (isset($data['campaignType'])) {
-                unset($data['campaignType']);
-            }
-            $type = $type . "/";
-        }
-
-        if (!$type && $this->apiVersion == 'v2') {
-            $this->logAndThrow("Unable to perform request. No type is set");
+        $type = $this->campaignTypePrefix ?: 'sp';
+        $type = $this->spVersion == 'v3' ? $type : "v2/" . $type . "/";
+        if (isset($data['campaignType'])) {
+            unset($data['campaignType']);
         }
         return $this->operation($type . "productAds/{$productAdId}", null, "DELETE");
     }
@@ -860,17 +748,9 @@ trait SponsoredProductsRequests {
      * @throws Exception
      */
     public function listProductAds(?array $data = null) {
-        $type = $this->getCampaignTypeFromData($data);
-        if ($this->apiVersion == 'v1') {
-            $type = null;
-        } else {
-            $type = $type . "/";
-        }
-
-        if (!$type && $this->apiVersion == 'v2') {
-            $this->logAndThrow("Unable to perform request. No type is set");
-        }
-        return $this->operation("productAds", $data);
+        $type = $this->campaignTypePrefix ?: 'sp';
+        $type = $this->spVersion == 'v3' ? $type : "v2/" . $type . "/";
+        return $this->operation($type . "productAds", $data);
     }
 
     /**
@@ -879,16 +759,8 @@ trait SponsoredProductsRequests {
      * @throws Exception
      */
     public function listProductAdsEx(?array $data = null) {
-        $type = $this->getCampaignTypeFromData($data);
-        if ($this->apiVersion == 'v1') {
-            $type = null;
-        } else {
-            $type = $type . "/";
-        }
-
-        if (!$type && $this->apiVersion == 'v2') {
-            $this->logAndThrow("Unable to perform request. No type is set");
-        }
+        $type = $this->campaignTypePrefix ?: 'sp';
+        $type = $this->spVersion == 'v3' ? $type : "v2/" . $type . "/";
         return $this->operation($type . "productAds/extended", $data);
     }
 
@@ -1040,6 +912,16 @@ trait SponsoredProductsRequests {
     }
 
     /**
+     * @param $recordType
+     * @param array|null $data
+     * @return array
+     * @throws Exception
+     */
+    public function requestOffineReport(array $data) {
+        return $this->operation( "reporting/reports", $data, "POST");
+    }
+
+    /**
      * @param array|null $data
      * @return string
      * @throws Exception
@@ -1072,11 +954,25 @@ trait SponsoredProductsRequests {
         }
 
         $req = $this->operation($type . "reports/{$reportId}");
-        Storage::disk('logs')->append('getReport', json_encode($req, 256));
         if ($req["success"]) {
             $json = json_decode($req["response"], true);
             if ($json["status"] == "SUCCESS") {
                 return $this->download($json["location"]);
+            }
+        }
+        return $req;
+    }
+
+    /**
+     * @param $reportId
+     * @return array
+     */
+    public function getOfflineReport($reportId) {
+        $req =  $this->operation("reporting/reports/{$reportId}");
+        if ($req["success"]) {
+            $json = json_decode($req["response"], true);
+            if ($json["status"] == "COMPLETED") {
+                return $this->download($json["url"], true);
             }
         }
         return $req;
