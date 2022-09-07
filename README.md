@@ -4,14 +4,14 @@ Official Amazon Advertising API PHP client library.
 
 ## Requirements
 
-PHP >= 7.0.0<br/>
+PHP >= 7.3.0<br/>
 cURL >= 7.18
 
 ## Documentation
 
 [API Reference](https://images-na.ssl-images-amazon.com/images/G/01/AdProductsWebsite/downloads/Amazon_Advertising_API_Reference.pdf)<br/>
 [Access Request](https://advertising.amazon.com/API)<br/>
-[Getting Started](https://images-na.ssl-images-amazon.com/images/G/01/AdProductsWebsite/downloads/Amazon_Advertising_API_Getting_Started_Guide.pdf)
+[Getting Started](https://advertising.amazon.com/API/docs/en-us)
 
 ## Tutorials
 [Register Sandbox Profile](https://git.io/vPKMl) - This tutorial will show you how to register a profile in sandbox using CURL.<br/>
