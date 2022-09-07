@@ -454,7 +454,7 @@ trait SponsoredBrandsRequests
      */
     public function getStoreAssets($data = null): array
     {
-        return $this->operation("/stores/assets", $data);
+        return $this->operation("stores/assets", $data);
     }
 
     /**

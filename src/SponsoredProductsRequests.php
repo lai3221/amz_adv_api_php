@@ -845,17 +845,17 @@ trait SponsoredProductsRequests {
      * @throws Exception
      */
     public function getStores(?array $data = null) {
-        return $this->operation("stores", $data);
+        return $this->operation("v2/stores", $data);
     }
 
     /**
-     * GET /v2stores/{$brandEntityId}
-     * @param int $brandEntityId
+     * GET /v2/stores/{$brandEntityId}
+     * @param string $brandEntityId
      * @return array
      * @throws Exception
      */
-    public function getStoresByBrandEntityId(int $brandEntityId) {
-        return $this->operation("stores/{$brandEntityId}");
+    public function getStoresByBrandEntityId(string $brandEntityId) {
+        return $this->operation("v2/stores/{$brandEntityId}");
     }
 
     /**
