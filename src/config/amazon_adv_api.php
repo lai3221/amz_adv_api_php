@@ -18,5 +18,6 @@ return [
     'isUseProxy'=>false,
     'guzzleProxy'=>'',
     'curlProxyType'=>'socks5',
-    'curlProxy'=>''
+    'curlProxy'=>'',
+    'headerAccept' => ''
 ];

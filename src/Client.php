@@ -49,7 +49,8 @@ class Client {
         'isUseProxy'        => false,
         'guzzleProxy'       => '',
         'curlProxy'         => '',
-        'appUserAgent'      => ''
+        'appUserAgent'      => '',
+        'headerAccept'      => '',
     ];
 
     private $apiVersion = null;
@@ -66,10 +67,9 @@ class Client {
     private $requestId = null;
     private $endpoints = null;
     private $versionStrings = null;
-    public $campaignTypePrefix;
-
+    public  $campaignTypePrefix;
+    private $headerAccept = null;
     public $profileId = null;
-
     public $headers = [];
 
     /**
@@ -91,7 +91,8 @@ class Client {
         $this->reportsVersion     = $config['reportsVersion'] ?? '';
         $this->apiVersion         = is_null($this->apiVersion) ? $this->versionStrings["apiVersion"] : $this->apiVersion;
         $this->applicationVersion = $this->versionStrings["applicationVersion"];
-        $this->userAgent          = $this->config['appUserAgent'];
+        $this->userAgent          = $config['appUserAgent'];
+        $this->headerAccept       = $config['headerAccept'] ?? '';
         $this->validateConfig($config);
         $this->validateConfigParameters();
         $this->setEndpoints();
@@ -246,13 +247,14 @@ class Client {
     private function operation(string $interface, ?array $params = [], string $method = "GET"): array {
         $headers = array(
             "Authorization: bearer {$this->config["accessToken"]}",
-            "Content-Type: application/json",
             "User-Agent: {$this->userAgent}",
-            "Amazon-Advertising-API-ClientId: {$this->config["clientId"]}"
+            "Amazon-Advertising-API-ClientId: {$this->config["clientId"]}",
         );
-
         if (!is_null($this->profileId)) {
             array_push($headers, "Amazon-Advertising-API-Scope: {$this->profileId}");
+        }
+        if (!is_null($this->headerAccept)) {
+            array_push($headers, "Accept: {$this->headerAccept}");
         }
 
         $this->headers   = $headers;
