@@ -54,6 +54,7 @@ $config = array(
     "refreshToken" => "REFRESH_TOKEN",
     "region" => "na",
     "sandbox" => false,
+    "headerAccept" => "" //optional
   );
 
 $client = new Client($config);
