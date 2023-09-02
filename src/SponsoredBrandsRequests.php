@@ -20,7 +20,7 @@ trait SponsoredBrandsRequests
      */
     public function listSponsoredBrandAdGroups($data = null): array
     {
-        return $this->operation("sb/adGroups", $data);
+        return $this->operation("sb/v4/adGroups/list", $data, 'POST');
     }
 
     /**
@@ -32,7 +32,7 @@ trait SponsoredBrandsRequests
      */
     public function getSponsoredBrandAdGroup(int $adGroupId): array
     {
-        return $this->operation("sb/adGroups/{$adGroupId}");
+        return $this->operation("sb/adGroups/$adGroupId");
     }
 
     /**
@@ -80,19 +80,20 @@ trait SponsoredBrandsRequests
      */
     public function getSponsoredBrandKeyword(int $keywordId): array
     {
-        return $this->operation("sb/keywords/{$keywordId}");
+        return $this->operation("sb/keywords/$keywordId");
     }
 
     /**
      * Archives a keyword specified by identifier.
      * @see https://advertising.amazon.com/API/docs/en-us/sponsored-brands/3-0/openapi#/Keywords/archiveKeyword
      * @param int $keywordId
+     * @param array|null $data
      * @return array
      * @throws Exception
      */
-    public function archiveSponsoredBrandKeyword(int $keywordId): array
+    public function archiveSponsoredBrandKeyword(int $keywordId, ?array $data): array
     {
-        return $this->operation("sb/keywords/{$keywordId}", "DELETE");
+        return $this->operation("sb/keywords/$keywordId", $data, "DELETE");
     }
 
     /**
@@ -140,19 +141,20 @@ trait SponsoredBrandsRequests
      */
     public function getSponsoredBrandNegativeKeyword(int $keywordId): array
     {
-        return $this->operation("sb/negativeKeywords/{$keywordId}");
+        return $this->operation("sb/negativeKeywords/$keywordId");
     }
 
     /**
      * Archives a negative keyword specified by identifier.
      * @see https://advertising.amazon.com/API/docs/en-us/sponsored-brands/3-0/openapi#/Negative%20keywords/archiveNegativeKeyword
      * @param int $keywordId
+     * @param array|null $data
      * @return array
      * @throws Exception
      */
-    public function archiveSponsoredBrandNegativeKeyword(int $keywordId): array
+    public function archiveSponsoredBrandNegativeKeyword(int $keywordId, ?array $data): array
     {
-        return $this->operation("sb/negativeKeywords/{$keywordId}", "DELETE");
+        return $this->operation("sb/negativeKeywords/$keywordId", $data, "DELETE");
     }
 
     /**
@@ -165,7 +167,7 @@ trait SponsoredBrandsRequests
      */
     public function listSponsoredBrandTargets(array $data): array
     {
-        return $this->operation("sb/targets/list", $data, "POST");
+        return $this->operation("sb/targets/list", $data, "POST", false);
     }
 
     /**
@@ -201,7 +203,7 @@ trait SponsoredBrandsRequests
      */
     public function getSponsoredBrandTarget(int $targetId): array
     {
-        return $this->operation("sb/targets/{$targetId}");
+        return $this->operation("sb/targets/$targetId");
     }
 
     /**
@@ -209,12 +211,13 @@ trait SponsoredBrandsRequests
      * has been archived it can't be made active again.
      * @see https://advertising.amazon.com/API/docs/en-us/sponsored-brands/3-0/openapi#/Product%20targeting/archiveTarget
      * @param int $targetId
+     * @param array|null $data
      * @return array
      * @throws Exception
      */
-    public function archiveSponsoredBrandTarget(int $targetId): array
+    public function archiveSponsoredBrandTarget(int $targetId, ?array $data): array
     {
-        return $this->operation("sb/targets/{$targetId}", "DELETE");
+        return $this->operation("sb/targets/$targetId", $data, "DELETE");
     }
 
     /**
@@ -239,7 +242,7 @@ trait SponsoredBrandsRequests
      */
     public function listSponsoredBrandNegativeTargets(array $data): array
     {
-        return $this->operation("sb/negativeTargets/list", $data, "POST");
+        return $this->operation("sb/negativeTargets/list", $data, "POST", false);
     }
 
     /**
@@ -275,7 +278,7 @@ trait SponsoredBrandsRequests
      */
     public function getSponsoredBrandNegativeTarget(int $negativeTargetId): array
     {
-        return $this->operation("sb/negativeTargets/{$negativeTargetId}");
+        return $this->operation("sb/negativeTargets/$negativeTargetId");
     }
 
     /**
@@ -283,12 +286,13 @@ trait SponsoredBrandsRequests
      * a negative target has been archived it can't be made active again.
      * @see https://advertising.amazon.com/API/docs/en-us/sponsored-brands/3-0/openapi#/Negative%20product%20targeting/archiveNegativeTarget
      * @param int $negativeTargetId
+     * @param array|null $data
      * @return array
      * @throws Exception
      */
-    public function archiveSponsoredBrandNegativeTarget(int $negativeTargetId): array
+    public function archiveSponsoredBrandNegativeTarget(int $negativeTargetId, ?array $data): array
     {
-        return $this->operation("sb/negativeTargets/{$negativeTargetId}", "DELETE");
+        return $this->operation("sb/negativeTargets/$negativeTargetId", $data, "DELETE");
     }
 
     /**
@@ -345,7 +349,7 @@ trait SponsoredBrandsRequests
      * @return array
      * @throws Exception
      */
-    public function getSponsoredBrandBidRecommendations(array $data)
+    public function getSponsoredBrandBidRecommendations(array $data): array
     {
         return $this->operation("sb/recommendations/bids", $data, 'POST');
     }
@@ -394,19 +398,20 @@ trait SponsoredBrandsRequests
      */
     public function getSponsoredBrandDraftCampaigns(int $draftCampaignId): array
     {
-        return $this->operation("sb/drafts/campaigns/{$draftCampaignId}");
+        return $this->operation("sb/drafts/campaigns/$draftCampaignId");
     }
 
     /**
      * Archives a draft campaign specified by identifier.
      * @see https://advertising.amazon.com/API/docs/en-us/sponsored-brands/3-0/openapi#/Drafts/deleteDraftCampaign
      * @param int $draftCampaignId
+     * @param array|null $data
      * @return array
      * @throws Exception
      */
-    public function archiveSponsoredBrandDraftCampaigns(int $draftCampaignId): array
+    public function archiveSponsoredBrandDraftCampaigns(int $draftCampaignId, ?array $data): array
     {
-        return $this->operation("sb/drafts/campaigns/{$draftCampaignId}", "DELETE");
+        return $this->operation("sb/drafts/campaigns/$draftCampaignId", $data, "DELETE");
     }
 
     /**
@@ -418,7 +423,7 @@ trait SponsoredBrandsRequests
      */
     public function submitSponsoredBrandDraftCampaigns(array $data): array
     {
-        return $this->operation("sb/drafts/campaigns/submit", $data,"POST");
+        return $this->operation("sb/drafts/campaigns/submit", $data, "POST");
     }
 
     /**
@@ -430,7 +435,7 @@ trait SponsoredBrandsRequests
      */
     public function moderationSponsoredBrandCampaign(int $campaignId): array
     {
-        return $this->operation("sb/moderation/campaigns/{$campaignId}");
+        return $this->operation("sb/moderation/campaigns/$campaignId");
     }
 
     /**
@@ -440,7 +445,7 @@ trait SponsoredBrandsRequests
      * @return array
      * @throws Exception
      */
-    public function getBrands($data = null): array
+    public function getBrands(?array $data): array
     {
         return $this->operation("brands", $data);
     }
@@ -452,7 +457,7 @@ trait SponsoredBrandsRequests
      * @return array
      * @throws Exception
      */
-    public function getStoreAssets($data = null): array
+    public function getStoreAssets(?array $data): array
     {
         return $this->operation("stores/assets", $data);
     }
@@ -473,14 +478,25 @@ trait SponsoredBrandsRequests
     }
 
     /**
-     * @see https://advertising.amazon.com/API/docs/en-us/sponsored-brands/3-0/openapi#/Campaigns/listCampaigns
+     * @see https://advertising.amazon.com/API/docs/en-us/sponsored-brands/3-0/openapi/prod#/Campaigns
+     * @param array|null $data
+     * @return array
+     * @throws Exception
+     */
+    public function listSponsoredBrandCampaigns(?array $data): array
+    {
+        return $this->operation("sb/v4/campaigns/list", $data, 'POST');
+    }
+
+    /**
+     * @see https://advertising.amazon.com/API/docs/en-us/sponsored-brands/3-0/openapi/prod#/Campaigns
      * @param null $data
      * @return array
      * @throws Exception
      */
-    public function listSponsoredBrandCampaigns($data = null): array
+    public function listSponsoredBrandCampaignsBeta($data = null): array
     {
-        return $this->operation("sb/campaigns", $data);
+        return $this->operation("sb/beta/campaigns/list", $data, 'POST');
     }
 
     /**
@@ -514,7 +530,7 @@ trait SponsoredBrandsRequests
      */
     public function getSponsoredBrandCampaign(int $campaignId): array
     {
-        return $this->operation("sb/campaigns/{$campaignId}");
+        return $this->operation("sb/campaigns/$campaignId");
     }
 
     /**
@@ -525,6 +541,17 @@ trait SponsoredBrandsRequests
      */
     public function archiveSponsoredBrandCampaign(int $campaignId): array
     {
-        return $this->operation("sb/campaigns/{$campaignId}", null, 'DELETE');
+        return $this->operation("sb/campaigns/$campaignId", null, 'DELETE');
+    }
+
+    /**
+     * @see https://advertising.amazon.com/API/docs/en-us/sponsored-brands/3-0/openapi/prod#/Ads/ListSponsoredBrandsAds
+     * @param array $data
+     * @return array
+     * @throws Exception
+     */
+    public function listSponsoredBrandAds(array $data): array
+    {
+        return $this->operation("sb/v4/ads/list", $data, 'POST');
     }
 }

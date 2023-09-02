@@ -17,7 +17,8 @@ require_once "ProfileRequests.php";
  * Class Client
  * Contains requests' wrappers of Amazon Ads API
  */
-class Client {
+class Client
+{
     use SponsoredProductsRequests;
     use SponsoredBrandsRequests;
     use SponsoredDisplayRequests;
@@ -32,25 +33,25 @@ class Client {
     public const CAMPAIGN_TYPE_SPONSORED_DISPLAY = 'sd';
 
     private $config = [
-        'clientId'          => null,
-        'clientSecret'      => null,
-        'region'            => null,
-        'accessToken'       => null,
-        'refreshToken'      => null,
-        'sandbox'           => false,
-        'saveFile'          => true,
-        'apiVersion'        => 'v1',
-        'sbVersion'         => 'v1',
-        'sdVersion'         => 'v1',
-        'spVersion'         => 'v1',
+        'clientId' => null,
+        'clientSecret' => null,
+        'region' => null,
+        'accessToken' => null,
+        'refreshToken' => null,
+        'sandbox' => false,
+        'saveFile' => true,
+        'apiVersion' => 'v1',
+        'sbVersion' => 'v4',
+        'sdVersion' => 'v3',
+        'spVersion' => 'v3',
         'portfoliosVersion' => 'v1',
-        'reportsVersion'    => 'v2',
-        'deleteGzipFile'    => false,
-        'isUseProxy'        => false,
-        'guzzleProxy'       => '',
-        'curlProxy'         => '',
-        'appUserAgent'      => '',
-        'headerAccept'      => '',
+        'reportsVersion' => 'v3',
+        'deleteGzipFile' => false,
+        'isUseProxy' => false,
+        'guzzleProxy' => '',
+        'curlProxy' => '',
+        'appUserAgent' => '',
+        'headerAccept' => '',
     ];
 
     private $apiVersion = null;
@@ -67,7 +68,7 @@ class Client {
     private $requestId = null;
     private $endpoints = null;
     private $versionStrings = null;
-    public  $campaignTypePrefix;
+    public $campaignTypePrefix;
     private $headerAccept = null;
     public $profileId = null;
     public $headers = [];
@@ -77,22 +78,22 @@ class Client {
      * @param $config
      * @throws Exception
      */
-    public function __construct($config) {
-        $this->config             = $config;
-        $regions                  = new Regions();
-        $this->endpoints          = $regions->endpoints;
-        $versions                 = new Versions();
-        $this->versionStrings     = $versions->versionStrings;
-        $this->apiVersion         = $config['apiVersion'] ?? null;
-        $this->sbVersion          = $config['sbVersion'] ?? '';
-        $this->sbVersion          = $config['sdVersion'] ?? '';
-        $this->spVersion          = $config['spVersion'] ?? '';
-        $this->portfoliosVersion  = $config['portfoliosVersion'] ?? '';
-        $this->reportsVersion     = $config['reportsVersion'] ?? '';
-        $this->apiVersion         = is_null($this->apiVersion) ? $this->versionStrings["apiVersion"] : $this->apiVersion;
+    public function __construct($config)
+    {
+        $this->config = $config;
+        $regions = new Regions();
+        $this->endpoints = $regions->endpoints;
+        $versions = new Versions();
+        $this->versionStrings = $versions->versionStrings;
+        $this->apiVersion = $config['apiVersion'] ?? null;
+        $this->sbVersion = $config['sdVersion'] ?? '';
+        $this->spVersion = $config['spVersion'] ?? '';
+        $this->portfoliosVersion = $config['portfoliosVersion'] ?? '';
+        $this->reportsVersion = $config['reportsVersion'] ?? '';
+        $this->apiVersion = is_null($this->apiVersion) ? $this->versionStrings["apiVersion"] : $this->apiVersion;
         $this->applicationVersion = $this->versionStrings["applicationVersion"];
-        $this->userAgent          = $config['appUserAgent'];
-        $this->headerAccept       = $config['headerAccept'] ?? '';
+        $this->userAgent = $config['appUserAgent'];
+        $this->headerAccept = $config['headerAccept'] ?? '';
         $this->validateConfig($config);
         $this->validateConfigParameters();
         $this->setEndpoints();
@@ -107,7 +108,8 @@ class Client {
      * @param string $name
      * @param $value
      */
-    public function __set(string $name, $value) {
+    public function __set(string $name, $value)
+    {
         if (isset($this->{$name})) {
             $this->{$name} = $value;
         }
@@ -117,27 +119,28 @@ class Client {
      * @return array
      * @throws Exception
      */
-    public function doRefreshToken(): array {
+    public function doRefreshToken(): array
+    {
         $headers = array(
             "Content-Type: application/x-www-form-urlencoded;charset=UTF-8",
-            "User-Agent: {$this->userAgent}"
+            "User-Agent: $this->userAgent"
         );
 
         $refresh_token = rawurldecode($this->config["refreshToken"]);
 
         $params = array(
-            "grant_type"    => "refresh_token",
+            "grant_type" => "refresh_token",
             "refresh_token" => $refresh_token,
-            "client_id"     => $this->config["clientId"],
+            "client_id" => $this->config["clientId"],
             "client_secret" => $this->config["clientSecret"]
         );
 
         $data = "";
         foreach ($params as $k => $v) {
-            $data .= "{$k}=" . rawurlencode($v) . "&";
+            $data .= "$k=" . rawurlencode($v) . "&";
         }
 
-        $url = "https://{$this->tokenUrl}";
+        $url = "https://$this->tokenUrl";
 
         $request = new CurlRequest($this->config);
         $request->setOption(CURLOPT_URL, $url);
@@ -164,27 +167,15 @@ class Client {
      * @param bool $gunzip
      * @return array
      */
-    private function download($location, $gunzip = false): array {
-        $headers = array();
-
-        if (!$gunzip) {
-            /* only send authorization header when not downloading actual file */
-            array_push($headers, "Authorization: bearer {$this->config["accessToken"]}");
-        }
-
-        if (!is_null($this->profileId)) {
-            array_push($headers, "Amazon-Advertising-API-Scope: {$this->profileId}");
-        }
-
+    public function download($location, bool $gunzip = false): array
+    {
         $request = new CurlRequest($this->config);
         $request->setOption(CURLOPT_URL, $location);
-        $request->setOption(CURLOPT_HTTPHEADER, $headers);
-        $request->setOption(CURLOPT_USERAGENT, $this->userAgent);
         if ($this->config['saveFile'] && $gunzip) {
             return $this->saveDownloaded($request);
         }
         if ($gunzip) {
-            $response             = $this->executeRequest($request);
+            $response = $this->executeRequest($request);
             $response["response"] = gzdecode($response["response"]);
             return $response;
         }
@@ -198,9 +189,10 @@ class Client {
      * @param CurlRequest $request
      * @return array
      */
-    protected function saveDownloaded(CurlRequest $request): array {
+    protected function saveDownloaded(CurlRequest $request): array
+    {
         $filePath = uniqid(microtime(true) . '_amzn_ads_') . '.json.gz';
-        $tmpFile  = fopen($filePath, 'w+');
+        $tmpFile = fopen($filePath, 'w+');
         $request->setOption(CURLOPT_HEADER, 0);
         $request->setOption(CURLOPT_FOLLOWLOCATION, 1);
         $request->setOption(CURLOPT_FILE, $tmpFile);
@@ -209,24 +201,24 @@ class Client {
             $extractedFile = $this->extractFile($filePath);
             fclose($tmpFile);
             $response['response_type'] = 'file';
-            $response["response"]      = $extractedFile;
-            return $response;
+            $response["response"] = $extractedFile;
         } else {
             fclose($tmpFile);
             unlink($filePath);
-            return $response;
         }
+        return $response;
     }
 
     /**
      * @param string $filePath
      * @return string
      */
-    protected function extractFile(string $filePath): string {
-        $bufferSize    = 4096; // read 4kb at a time
+    protected function extractFile(string $filePath): string
+    {
+        $bufferSize = 4096; // read 4kb at a time
         $unzipFilePath = str_replace('.gz', '', $filePath);
-        $file          = gzopen($filePath, 'rb');
-        $unzippedFile  = fopen($unzipFilePath, 'wb');
+        $file = gzopen($filePath, 'rb');
+        $unzippedFile = fopen($unzipFilePath, 'wb');
 
         while (!gzeof($file)) {
             fwrite($unzippedFile, gzread($file, $bufferSize));
@@ -241,33 +233,37 @@ class Client {
      * @param string $interface
      * @param array|null $params
      * @param string $method
+     * @param bool $needAccept
      * @return array
      * @throws Exception
      */
-    private function operation(string $interface, ?array $params = [], string $method = "GET"): array {
+    private function operation(string $interface, ?array $params = [], string $method = "GET", bool $needAccept = true): array
+    {
         $headers = array(
-            "Authorization: bearer {$this->config["accessToken"]}",
-            "User-Agent: {$this->userAgent}",
-            "Amazon-Advertising-API-ClientId: {$this->config["clientId"]}",
+            "Authorization: bearer $this->config['accessToken']",
+            "User-Agent: $this->userAgent",
+            "Amazon-Advertising-API-ClientId:$this->config['clientId']",
         );
         if (!is_null($this->profileId)) {
-            array_push($headers, "Amazon-Advertising-API-Scope: {$this->profileId}");
+            $headers[] = "Amazon-Advertising-API-Scope: $this->profileId";
         }
-        if (!is_null($this->headerAccept)) {
-            array_push($headers, "Accept: {$this->headerAccept}");
+        if ($this->headerAccept) {
+            if ($needAccept) {
+                $headers[] = "Accept: $this->headerAccept";
+            }
+            $headers[] = "Content-Type: $this->headerAccept";
         }
-
-        $this->headers   = $headers;
-        $request         = new CurlRequest($this->config);
-        $this->endpoint  = trim($this->endpoint, "/");
-        $url             = "{$this->endpoint}/{$interface}";
+        $this->headers = $headers;
+        $request = new CurlRequest($this->config);
+        $this->endpoint = trim($this->endpoint, "/");
+        $url = "$this->endpoint/$interface";
         $this->requestId = null;
         switch (strtolower($method)) {
             case "get":
                 if (!empty($params)) {
                     $url .= "?";
                     foreach ($params as $k => $v) {
-                        $url .= "{$k}=" . rawurlencode($v) . "&";
+                        $url .= "$k=" . rawurlencode($v) . "&";
                     }
                     $url = rtrim($url, "&");
                 }
@@ -282,7 +278,7 @@ class Client {
                 }
                 break;
             default:
-                $this->logAndThrow("Unknown verb {$method}.");
+                $this->logAndThrow("Unknown verb $method.");
         }
         $request->setOption(CURLOPT_URL, $url);
         $request->setOption(CURLOPT_HTTPHEADER, $headers);
@@ -295,10 +291,11 @@ class Client {
      * @param CurlRequest $request
      * @return array
      */
-    protected function executeRequest(CurlRequest $request): array {
-        $response        = $request->execute();
+    protected function executeRequest(CurlRequest $request): array
+    {
+        $response = $request->execute();
         $this->requestId = $request->requestId;
-        $response_info   = $request->getInfo();
+        $response_info = $request->getInfo();
         $request->close();
         if ($response_info["http_code"] == 307) {
             /* application/octet-stream */
@@ -307,26 +304,26 @@ class Client {
 
         if (!preg_match("/^(2|3)\d{2}$/", $response_info["http_code"])) {
             $requestId = 0;
-            $json      = json_decode($response, true);
+            $json = json_decode($response, true);
             if (!is_null($json)) {
                 if (array_key_exists("requestId", $json)) {
                     $requestId = json_decode($response, true)["requestId"];
                 }
             }
             return array(
-                "success"      => false,
-                "code"         => $response_info["http_code"],
-                "response"     => is_array($response) ? $response : $json,
+                "success" => false,
+                "code" => $response_info["http_code"],
+                "response" => is_array($response) ? $response : $json,
                 'responseInfo' => $response_info,
-                "requestId"    => $requestId
+                "requestId" => $requestId
             );
         } else {
             return array(
-                "success"      => true,
-                "code"         => $response_info["http_code"],
+                "success" => true,
+                "code" => $response_info["http_code"],
                 'responseInfo' => $response_info,
-                "response"     => $response,
-                "requestId"    => $this->requestId
+                "response" => $response,
+                "requestId" => $this->requestId
             );
         }
     }
@@ -336,7 +333,8 @@ class Client {
      * @return bool
      * @throws Exception
      */
-    private function validateConfig($config): bool {
+    private function validateConfig($config): bool
+    {
         if (is_null($config)) {
             $this->logAndThrow("'config' cannot be null.");
         }
@@ -345,7 +343,7 @@ class Client {
             if (array_key_exists($k, $this->config)) {
                 $this->config[$k] = $v;
             } else {
-                $this->logAndThrow("Unknown parameter '{$k}' in config.");
+                $this->logAndThrow("Unknown parameter $k in config.");
             }
         }
         return true;
@@ -355,10 +353,11 @@ class Client {
      * @return bool
      * @throws Exception
      */
-    private function validateConfigParameters(): bool {
+    private function validateConfigParameters(): bool
+    {
         foreach ($this->config as $k => $v) {
             if (is_null($v) && $k !== "accessToken" && $k !== "refreshToken") {
-                $this->logAndThrow("Missing required parameter '{$k}'.");
+                $this->logAndThrow("Missing required parameter $k.");
             }
             switch ($k) {
                 case "clientId":
@@ -404,7 +403,8 @@ class Client {
      * @return bool
      * @throws Exception
      */
-    private function setEndpoints(): bool {
+    private function setEndpoints(): bool
+    {
         /* check if region exists and set api/token endpoints */
         if (array_key_exists(strtolower($this->config["region"]), $this->endpoints)) {
             $region_code = strtolower($this->config["region"]);
@@ -424,7 +424,8 @@ class Client {
      * @param $message
      * @throws Exception
      */
-    private function logAndThrow($message) {
+    private function logAndThrow($message)
+    {
         throw new Exception($message);
     }
 

@@ -2,6 +2,8 @@
 
 namespace AmazonAdvertisingApi;
 
+use Exception;
+
 /**
  * Trait ProductEligibilityRequests
  * @see https://advertising.amazon.com/API/docs/en-us/eligibility-prod-3p#/
@@ -20,6 +22,7 @@ trait ProductEligibilityRequests
      * @see https://advertising.amazon.com/API/docs/en-us/eligibility-prod-3p/#/Product%20Eligibility/productEligibility
      * @param array $data
      * @return array
+     * @throws Exception
      */
     public function getProductListEligibility(array $data): array
     {

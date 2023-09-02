@@ -1,4 +1,5 @@
 <?php
+
 namespace AmazonAdvertisingApi;
 
 /**
@@ -8,7 +9,7 @@ namespace AmazonAdvertisingApi;
 class Versions
 {
     public $versionStrings = array(
-        "apiVersion"         => "v3",
+        "apiVersion" => "v3",
         "applicationVersion" => "1.2"
     );
 }
