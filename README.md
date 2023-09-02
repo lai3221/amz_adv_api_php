@@ -2,6 +2,8 @@
 
 Official Amazon Advertising API PHP client library.
 
+Sponsored Products（V3）
+
 ## Requirements
 
 PHP >= 7.3.0<br/>
@@ -9,7 +11,7 @@ cURL >= 7.18
 
 ## Documentation
 
-[API Reference](https://images-na.ssl-images-amazon.com/images/G/01/AdProductsWebsite/downloads/Amazon_Advertising_API_Reference.pdf)<br/>
+[API Reference](https://advertising.amazon.com/API/docs/en-us/reference/api-overview)<br/>
 [Access Request](https://advertising.amazon.com/API)<br/>
 [Getting Started](https://advertising.amazon.com/API/docs/en-us)
 

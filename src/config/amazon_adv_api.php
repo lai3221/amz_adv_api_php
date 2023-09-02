@@ -13,11 +13,11 @@ return [
     'sdVersion' => '',
     'portfoliosVersion' => '',
     'reportsVersion' => '',
-    'appUserAgent'=> '',
+    'appUserAgent' => '',
     'deleteGzipFile' => false,
-    'isUseProxy'=>false,
-    'guzzleProxy'=>'',
-    'curlProxyType'=>'socks5',
-    'curlProxy'=>'',
+    'isUseProxy' => false,
+    'guzzleProxy' => '',
+    'curlProxyType' => 'socks5',
+    'curlProxy' => '',
     'headerAccept' => ''
 ];

@@ -56,19 +56,20 @@ trait SponsoredDisplayRequests
      */
     public function getSponsoredDisplayCampaigns(int $campaignId): array
     {
-        return $this->operation("sd/campaigns/{$campaignId}");
+        return $this->operation("sd/campaigns/$campaignId");
     }
 
     /**
-     * Sets the campaign status to archived.
+     * Sets the campaign status to archive.
      * @see https://advertising.amazon.com/API/docs/en-us/sponsored-display/3-0/openapi#/Campaigns/archiveCampaign
      * @param int $campaignId
+     * @param array|null $data
      * @return array
      * @throws Exception
      */
-    public function archiveSponsoredDisplayCampaigns(int $campaignId): array
+    public function archiveSponsoredDisplayCampaigns(int $campaignId, ?array $data): array
     {
-        return $this->operation("sd/campaigns/{$campaignId}", "DELETE");
+        return $this->operation("sd/campaigns/$campaignId", $data, "DELETE");
     }
 
     /**
@@ -92,7 +93,7 @@ trait SponsoredDisplayRequests
      */
     public function getSponsoredDisplayCampaignsEx(int $campaignId): array
     {
-        return $this->operation("sd/campaigns/extended/{$campaignId}");
+        return $this->operation("sd/campaigns/extended/$campaignId");
     }
 
     /**
@@ -140,19 +141,20 @@ trait SponsoredDisplayRequests
      */
     public function getSponsoredDisplayAdGroup(int $adGroupId): array
     {
-        return $this->operation("sd/adGroups/{$adGroupId}");
+        return $this->operation("sd/adGroups/$adGroupId");
     }
 
     /**
-     * Sets the ad group status to archived.
+     * Sets the ad group status to archive.
      * @see https://advertising.amazon.com/API/docs/en-us/sponsored-display/3-0/openapi#/Ad%20groups/archiveAdGroup
      * @param int $adGroupId
+     * @param array|null $data
      * @return array
      * @throws Exception
      */
-    public function archiveSponsoredDisplayAdGroupId(int $adGroupId): array
+    public function archiveSponsoredDisplayAdGroupId(int $adGroupId, ?array $data): array
     {
-        return $this->operation("sd/adGroups/{$adGroupId}", "DELETE");
+        return $this->operation("sd/adGroups/$adGroupId", $data, "DELETE");
     }
 
     /**
@@ -176,7 +178,7 @@ trait SponsoredDisplayRequests
      */
     public function getSponsoredDisplayAdGroupsEx(int $adGroupId): array
     {
-        return $this->operation("sd/adGroups/extended/{$adGroupId}");
+        return $this->operation("sd/adGroups/extended/$adGroupId");
     }
 
     /**
@@ -224,19 +226,20 @@ trait SponsoredDisplayRequests
      */
     public function getSponsoredDisplayProductAds(int $adId): array
     {
-        return $this->operation("sd/productAds/{$adId}");
+        return $this->operation("sd/productAds/$adId");
     }
 
     /**
      * Sets the status of a product ad to archived.
      * @see https://advertising.amazon.com/API/docs/en-us/sponsored-display/3-0/openapi#/Product%20ads/archiveProductAd
      * @param int $adId
+     * @param array|null $data
      * @return array
      * @throws Exception
      */
-    public function archiveSponsoredDisplayProductAds(int $adId): array
+    public function archiveSponsoredDisplayProductAds(int $adId, ?array $data): array
     {
-        return $this->operation("sd/productAds/{$adId}", "DELETE");
+        return $this->operation("sd/productAds/$adId", $data, "DELETE");
     }
 
     /**
@@ -260,7 +263,7 @@ trait SponsoredDisplayRequests
      */
     public function getSponsoredDisplayProductAdsEx(int $adId): array
     {
-        return $this->operation("sd/productAds/extended/{$adId}");
+        return $this->operation("sd/productAds/extended/$adId");
     }
 
     /**
@@ -308,19 +311,20 @@ trait SponsoredDisplayRequests
      */
     public function getSponsoredDisplayTargets(int $targetId): array
     {
-        return $this->operation("sd/targets/{$targetId}");
+        return $this->operation("sd/targets/$targetId");
     }
 
     /**
      * Sets the `state` of a targeting clause to `archived`.
      * @see https://advertising.amazon.com/API/docs/en-us/sponsored-display/3-0/openapi#/Targeting/archiveTargetingClause
      * @param int $targetId
+     * @param array|null $data
      * @return array
      * @throws Exception
      */
-    public function archiveSponsoredDisplayTargets(int $targetId): array
+    public function archiveSponsoredDisplayTargets(int $targetId, ?array $data): array
     {
-        return $this->operation("sd/targets/{$targetId}", "DELETE");
+        return $this->operation("sd/targets/$targetId", $data, "DELETE");
     }
 
     /**
@@ -344,7 +348,7 @@ trait SponsoredDisplayRequests
      */
     public function getSponsoredDisplayTargetsEx(int $targetId): array
     {
-        return $this->operation("sd/targets/extended/{$targetId}");
+        return $this->operation("sd/targets/extended/$targetId");
     }
 
     /**
@@ -392,19 +396,20 @@ trait SponsoredDisplayRequests
      */
     public function getSponsoredDisplayNegativeTargets(int $negativeTargetId): array
     {
-        return $this->operation("sd/negativeTargets/{$negativeTargetId}");
+        return $this->operation("sd/negativeTargets/$negativeTargetId");
     }
 
     /**
      * Sets the `state` of a negative targeting clause to `archived`.
      * @see https://advertising.amazon.com/API/docs/en-us/sponsored-display/3-0/openapi#/Negative%20targeting/archiveNegativeTargetingClause
      * @param int $negativeTargetId
+     * @param array|null $data
      * @return array
      * @throws Exception
      */
-    public function archiveSponsoredDisplayNegativeTargets(int $negativeTargetId): array
+    public function archiveSponsoredDisplayNegativeTargets(int $negativeTargetId, ?array $data): array
     {
-        return $this->operation("sd/negativeTargets/{$negativeTargetId}", "DELETE");
+        return $this->operation("sd/negativeTargets/$negativeTargetId", $data, "DELETE");
     }
 
     /**
@@ -428,7 +433,7 @@ trait SponsoredDisplayRequests
      */
     public function getSponsoredDisplayNegativeTargetsEx(int $negativeTargetId): array
     {
-        return $this->operation("sd/negativeTargets/extended/{$negativeTargetId}");
+        return $this->operation("sd/negativeTargets/extended/$negativeTargetId");
     }
 
     /**

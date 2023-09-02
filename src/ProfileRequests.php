@@ -15,6 +15,7 @@ trait ProfileRequests
      * Get amazon user data (user_id,email)
      * @see https://developer.amazon.com/docs/login-with-amazon/obtain-customer-profile.html
      * @return array
+     * @throws Exception
      */
     public function getUserProfile(): array
     {
@@ -26,7 +27,7 @@ trait ProfileRequests
      * @return array
      * @throws Exception
      */
-    public function listProfiles()
+    public function listProfiles(): array
     {
         return $this->operation("profiles");
     }
@@ -36,18 +37,18 @@ trait ProfileRequests
      * @return array
      * @throws Exception
      */
-    public function registerProfile(array $data)
+    public function registerProfile(array $data): array
     {
         return $this->operation("profiles/register", $data, "PUT");
     }
 
     /**
      * @see https://advertising.amazon.com/API/docs/en-us/reference/2/profiles#/Profiles/registerSandboxVendor
-     * @param $data
+     * @param array $data
      * @return array
      * @throws Exception
      */
-    public function registerBrand(array $data)
+    public function registerBrand(array $data): array
     {
         return $this->operation("profiles/registerBrand", $data, "PUT");
     }
@@ -57,9 +58,9 @@ trait ProfileRequests
      * @return array
      * @throws Exception
      */
-    public function registerProfileStatus($profileId)
+    public function registerProfileStatus($profileId): array
     {
-        return $this->operation("profiles/register/{$profileId}/status");
+        return $this->operation("profiles/register/$profileId/status");
     }
 
     /**
@@ -67,9 +68,9 @@ trait ProfileRequests
      * @return array
      * @throws Exception
      */
-    public function getProfile($profileId)
+    public function getProfile($profileId): array
     {
-        return $this->operation("profiles/{$profileId}");
+        return $this->operation("profiles/$profileId");
     }
 
     /**
@@ -77,7 +78,7 @@ trait ProfileRequests
      * @return array
      * @throws Exception
      */
-    public function updateProfiles($data)
+    public function updateProfiles($data): array
     {
         return $this->operation("profiles", $data, "PUT");
     }

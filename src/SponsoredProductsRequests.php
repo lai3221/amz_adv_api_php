@@ -8,843 +8,715 @@ use Exception;
  * Trait SponsoredProductsRequests
  * Contains requests' wrappers of Amazon Ads API for Sponsored Products
  */
-trait SponsoredProductsRequests {
+trait SponsoredProductsRequests
+{
+
     /**
-     * @param $campaignId
+     * @param array $data
      * @return array
+     * @throws Exception
      */
-    public function getCampaign($campaignId): array {
-        $type = $this->campaignTypePrefix ?: 'sp';
-        $type = $this->spVersion == 'v3' ? $type : "v2/" . $type . "/";
-        return $this->operation($type . "campaigns/{$campaignId}");
+    public function createCampaigns(array $data): array
+    {
+        return $this->operation('sp/campaigns', $data, 'POST');
     }
 
     /**
+     * @param array $data
+     * @return array
+     * @throws Exception
+     */
+    public function updateCampaigns(array $data): array
+    {
+        return $this->operation('sp/campaigns', $data, 'PUT');
+    }
+
+    /**
+     * @param array $data
+     * @return array
+     * @throws Exception
+     */
+    public function archiveCampaign(array $data): array
+    {
+        return $this->operation('sp/campaigns/delete', $data, 'POST');
+    }
+
+    /**
+     * @param array $data
+     * @return array
+     * @throws Exception
+     */
+    public function listCampaigns(array $data): array
+    {
+        return $this->operation('sp/campaigns/list', $data, 'POST');
+    }
+
+
+    /**
+     * @param array $data
+     * @return array
+     * @throws Exception
+     */
+    public function createAdGroups(array $data): array
+    {
+        return $this->operation('sp/adGroups', $data, 'POST');
+    }
+
+    /**
+     * @param array $data
+     * @return array
+     * @throws Exception
+     */
+    public function updateAdGroups(array $data): array
+    {
+        return $this->operation('sp/adGroups', $data, 'PUT');
+    }
+
+    /**
+     * @param array $data
+     * @return array
+     * @throws Exception
+     */
+    public function archiveAdGroup(array $data): array
+    {
+        return $this->operation('sp/adGroups/delete', $data, 'POST');
+    }
+
+    /**
+     * @param array $data
+     * @return array
+     * @throws Exception
+     */
+    public function listAdGroups(array $data): array
+    {
+        return $this->operation('sp/adGroups/list', $data, 'POST');
+    }
+
+    /**
+     * @param array $data
+     * @return array
+     * @throws Exception
+     */
+    public function createProductAds(array $data): array
+    {
+        return $this->operation('sp/productAds', $data, 'POST');
+    }
+
+    /**
+     * @param array $data
+     * @return array
+     * @throws Exception
+     */
+    public function updateProductAds(array $data): array
+    {
+        return $this->operation('sp/productAds', $data, 'PUT');
+    }
+
+    /**
+     * @param array $data
+     * @return array
+     * @throws Exception
+     */
+    public function archiveProductAds(array $data): array
+    {
+        return $this->operation('sp/productAds/delete', $data, 'POST');
+    }
+
+    /**
+     * @param array $data
+     * @return array
+     * @throws Exception
+     */
+    public function listProductAds(array $data): array
+    {
+        return $this->operation('sp/productAds/list', $data, 'POST');
+    }
+
+    /**
+     * @param array $data
+     * @return array
+     * @throws Exception
+     */
+    public function listKeywords(array $data): array
+    {
+        return $this->operation('sp/keywords/list', $data, 'POST');
+    }
+
+    /**
+     * @param array $data
+     * @return array
+     * @throws Exception
+     */
+    public function createKeywords(array $data): array
+    {
+        return $this->operation('sp/keywords', $data, 'POST');
+    }
+
+    /**
+     * @param array $data
+     * @return array
+     * @throws Exception
+     */
+    public function updateKeywords(array $data): array
+    {
+        return $this->operation('sp/keywords', $data, 'PUT');
+    }
+
+    /**
+     * @param array $data
+     * @return array
+     * @throws Exception
+     */
+    public function archiveKeywords(array $data): array
+    {
+        return $this->operation('sp/keywords/delete', $data, 'PUT');
+    }
+
+    /**
+     * @param array $data
+     * @return array
+     * @throws Exception
+     */
+    public function keywordRecommendations(array $data): array
+    {
+        return $this->operation('sp/targets/keywords/recommendations', $data, 'POST');
+    }
+
+    /**
+     * @param array $data
+     * @return array
+     * @throws Exception
+     */
+    public function listTargetingClauses(array $data): array
+    {
+        return $this->operation("sp/targets/list", $data, 'POST');
+    }
+
+
+    /**
+     * @param array $data
+     * @return array
+     * @throws Exception
+     */
+    public function createTargetingClauses(array $data): array
+    {
+        return $this->operation("sp/targets", $data, 'POST');
+    }
+
+    /**
+     * @param array $data
+     * @return array
+     * @throws Exception
+     */
+    public function updateTargetingClauses(array $data): array
+    {
+        return $this->operation("sp/targets", $data, 'PUT');
+    }
+
+    /**
+     * @param array $data
+     * @return array
+     * @throws Exception
+     */
+    public function archiveTargetingClause(array $data): array
+    {
+        return $this->operation('sp/targets/delete', $data, 'POST');
+    }
+
+    /**
+     * Get number of targetable asins based on refinements provided by the user.
+     * @param array $data
+     * @return array
+     * @throws Exception
+     */
+    public function getTargetsProductsCount(array $data): array
+    {
+        return $this->operation('sp/targets/products/count', $data, 'POST');
+    }
+
+    /**
+     * Returns all targetable categories.
+     * @param array $data
+     * @return array
+     * @throws Exception
+     */
+    public function getTargetingCategories(array $data): array
+    {
+        return $this->operation('sp/targets/categories', $data);
+    }
+
+    /**
+     * Returns brands related to keyword input for negative targeting.
+     * @param array $data
+     * @return array
+     * @throws Exception
+     */
+    public function searchNegativeTargetsBrands(array $data): array
+    {
+        return $this->operation('sp/negativeTargets/brands/search', $data, 'POST');
+    }
+
+    /**
+     * Returns refinements according to category input.
+     * @param $categoryId
+     * @param array|null $data
+     * @return array
+     * @throws Exception
+     */
+    public function getTargetsCategoryRefinements($categoryId, ?array $data): array
+    {
+        return $this->operation("sp/targets/category/$categoryId/refinements", $data);
+    }
+
+    /**
+     * Returns a list of category recommendations for the input list of ASINs.
+     * @param array $data
+     * @return array
+     * @throws Exception
+     */
+    public function listTargetsCategoriesRecommendations(array $data): array
+    {
+        return $this->operation('sp/targets/categories/recommendations', $data, 'POST');
+    }
+
+    /**
+     * Returns brands recommended for negative targeting.
+     * @return array
+     * @throws Exception
+     */
+    public function getNegativeTargetsBrandsRecommendations(): array
+    {
+        return $this->operation('sp/negativeTargets/brands/recommendations');
+    }
+
+    /**
+     * @param array $data
+     * @return array
+     * @throws Exception
+     */
+    public function createNegativeKeywords(array $data): array
+    {
+        return $this->operation('sp/negativeKeywords', $data, 'POST');
+    }
+
+    /**
+     * @param array $data
+     * @return array
+     * @throws Exception
+     */
+    public function updateNegativeKeywords(array $data): array
+    {
+        return $this->operation('sp/negativeKeywords', $data, 'PUT');
+    }
+
+    /**
+     * @param array $data
+     * @return array
+     * @throws Exception
+     */
+    public function archiveNegativeKeyword(array $data): array
+    {
+        return $this->operation('sp/negativeKeywords/list', $data, 'POST');
+    }
+
+    /**
+     * @param array $data
+     * @return array
+     * @throws Exception
+     */
+    public function listNegativeKeywords(array $data): array
+    {
+        return $this->operation('sp/negativeKeywords/list', $data, 'POST');
+    }
+
+    /**
+     * @param array $data
+     * @return array
+     * @throws Exception
+     */
+    public function createCampaignNegativeKeywords(array $data): array
+    {
+        return $this->operation('sp/campaignNegativeKeywords', $data, 'POST');
+    }
+
+    /**
+     * @param array $data
+     * @return array
+     * @throws Exception
+     */
+    public function updateCampaignNegativeKeywords(array $data): array
+    {
+        return $this->operation('sp/campaignNegativeKeywords', $data, 'PUT');
+    }
+
+    /**
+     * @param array $data
+     * @return array
+     * @throws Exception
+     */
+    public function deleteCampaignNegativeKeyword(array $data): array
+    {
+        return $this->operation('sp/campaignNegativeKeywords/delete', $data, 'POST');
+    }
+
+    /**
+     * @param array $data
+     * @return array
+     * @throws Exception
+     */
+    public function listCampaignNegativeKeywords(array $data): array
+    {
+        return $this->operation('sp/campaignNegativeKeywords/list', $data, 'POST');
+    }
+
+    /**
+     * @param array $data
+     * @return array
+     * @throws Exception
+     */
+    public function listNegativeTargetingClauses(array $data): array
+    {
+        return $this->operation('sp/negativeTargets/list', $data, 'POST');
+    }
+
+    /**
+     * @param array $data
+     * @return array
+     * @throws Exception
+     */
+    public function createNegativeTargetingClauses(array $data): array
+    {
+        return $this->operation('sp/negativeTargets', $data, 'POST');
+    }
+
+    /**
+     * @param array $data
+     * @return array
+     * @throws Exception
+     */
+    public function updateNegativeTargetingClauses(array $data): array
+    {
+        return $this->operation('sp/negativeTargets', $data, 'PUT');
+    }
+
+    /**
+     * @param array $data
+     * @return array
+     * @throws Exception
+     */
+    public function archiveNegativeTargetingClause(array $data): array
+    {
+        return $this->operation('sp/negativeTargets/delete', $data, 'POST');
+    }
+
+    /**
+     * @param array $data
+     * @return array
+     * @throws Exception
+     */
+    public function listCampaignNegativeTargetingClauses(array $data): array
+    {
+        return $this->operation('sp/campaignNegativeTargets/list', $data, 'POST');
+    }
+
+
+    /**
+     * @param array $data
+     * @return array
+     * @throws Exception
+     */
+    public function createCampaignNegativeTargetingClauses(array $data): array
+    {
+        return $this->operation('sp/campaignNegativeTargets', $data, 'POST');
+    }
+
+    /**
+     * @param array $data
+     * @return array
+     * @throws Exception
+     */
+    public function updateCampaignNegativeTargetingClauses(array $data): array
+    {
+        return $this->operation('sp/campaignNegativeTargets', $data, 'PUT');
+    }
+
+    /**
+     * @param array $data
+     * @return array
+     * @throws Exception
+     */
+    public function archiveCampaignNegativeTargetingClause(array $data): array
+    {
+        return $this->operation('sp/campaignNegativeTargets/delete', $data, 'POST');
+    }
+
+    /**
+     * https://advertising.amazon.com/API/docs/en-us/sponsored-products/3-0/openapi/prod#tag/ThemeBasedBidRecommendation/operation/GetThemeBasedBidRecommendationForAdGroup_v1
+     * This API is currently available in US, UK, DE, CA, JP, IN, ES, and FR. The API supports keyword and auto targets only.
+     * The API will return a 422 response when an unsupported marketplace or target is provided.
+     * For product targets in all marketplaces, and keyword or auto targets in other marketplaces, call /v2/sp/targets/bidRecommendations.
+     * @param array $data
+     * @return array
+     * @throws Exception
+     */
+    public function themeBasedBidRecommendation(array $data): array
+    {
+        return $this->operation('sp/targets/bid/recommendations', $data, 'POST');
+    }
+
+    /**
+     * Creates a campaign optimization rule.
+     * https://advertising.amazon.com/API/docs/en-us/sponsored-products/3-0/openapi/prod#tag/Campaign-Optimization-Rules/operation/CreateOptimizationRule
+     * @param array $data
+     * @return array
+     * @throws Exception
+     */
+    public function createsCampaignOptimizationRule(array $data): array
+    {
+        return $this->operation('sp/rules/campaignOptimization', $data, 'POST');
+    }
+
+    /**
+     * Updates a campaign optimization rule.
+     * @param array $data
+     * @return array
+     * @throws Exception
+     */
+    public function updateCampaignOptimizationRule(array $data): array
+    {
+        return $this->operation('sp/rules/campaignOptimization', $data, 'PUT');
+    }
+
+
+    /**
+     * Gets campaign optimization rule state. Recommended refresh frequency is once a day.
+     * https://advertising.amazon.com/API/docs/en-us/sponsored-products/3-0/openapi/prod#tag/Campaign-Optimization-Rules/operation/GetRuleNotification
+     * @param array $data
+     * @return array
+     * @throws Exception
+     */
+    public function getsCampaignOptimizationRuleState(array $data): array
+    {
+        return $this->operation('sp/rules/campaignOptimization/state', $data, 'POST');
+    }
+
+    /**
+     * Gets a campaign optimization rule recommendation for SP campaigns.
+     * @param array $data
+     * @return array
+     * @throws Exception
+     */
+    public function getCampaignOptimizationRuleRecommendation(array $data): array
+    {
+        return $this->operation('sp/rules/campaignOptimization/eligibility', $data, 'POST');
+    }
+
+    /**
+     * Gets a campaign optimization rule specified by identifier.
+     * @param $campaignOptimizationId
+     * @return array
+     * @throws Exception
+     */
+    public function getCampaignOptimizationRuleReVByIdentifier($campaignOptimizationId): array
+    {
+        return $this->operation("sp/rules/campaignOptimization/$campaignOptimizationId");
+    }
+
+    /**
+     * Deletes a campaign optimization rule specified by identifier.
+     * @param $campaignOptimizationId
+     * @return array
+     * @throws Exception
+     */
+    public function deleteCampaignOptimizationRuleReVByIdentifier($campaignOptimizationId): array
+    {
+        return $this->operation("sp/rules/campaignOptimization/$campaignOptimizationId", null, 'DELETE');
+    }
+
+    /**
+     * Associates one or more budget rules to a campaign specified by identifier.
      * @param $campaignId
      * @param array|null $data
      * @return array
      * @throws Exception
      */
-    public function getCampaignEx($campaignId, ?array $data = null): array {
-        $type = $this->campaignTypePrefix ?: 'sp';
-        $type = $this->spVersion == 'v3' ? $type : "v2/" . $type . "/";
-        return $this->operation($type . "campaigns/extended/{$campaignId}");
+    public function associatesBudgetRulesByCampaignIdentifier($campaignId, ?array $data): array
+    {
+        return $this->operation("sp/campaigns/$campaignId/budgetRules", $data, 'POST');
     }
 
     /**
-     * @param $data
-     * @return array
-     * @throws Exception
-     */
-    public function createCampaigns(array $data): array {
-        $type = $this->campaignTypePrefix ?: 'sp';
-        $type = $this->spVersion == 'v3' ? $type : "v2/" . $type . "/";
-        return $this->operation($type . "campaigns", $data, "POST");
-    }
-
-    /**
-     * @param $data
-     * @return array
-     * @throws Exception
-     */
-    public function updateCampaigns(array $data): array {
-        $type = $this->campaignTypePrefix ?: 'sp';
-        $type = $this->spVersion == 'v3' ? $type : "v2/" . $type . "/";
-        return $this->operation($type . "campaigns", $data, "PUT");
-    }
-
-    /**
+     * Gets a list of budget rules associated to a campaign specified by identifier.
      * @param $campaignId
-     * @param null|array $data
      * @return array
      * @throws Exception
      */
-    public function archiveCampaign($campaignId, ?array $data = null): array {
-        $type = $this->campaignTypePrefix ?: 'sp';
-        $type = $this->spVersion == 'v3' ? $type : "v2/" . $type . "/";
-        return $this->operation($type . "campaigns/{$campaignId}", null, "DELETE");
+    public function getBudgetRulesByCampaignIdentifier($campaignId): array
+    {
+        return $this->operation("sp/campaigns/$campaignId/budgetRules");
     }
 
     /**
-     * @param null|array $data
+     * Creates one or more budget rules.
+     * @param array|null $data
      * @return array
      * @throws Exception
      */
-    public function listCampaigns(?array $data = null) {
-        $type = $this->campaignTypePrefix ?: 'sp';
-        $type = $this->spVersion == 'v3' ? $type : "v2/" . $type . "/";
-        return $this->operation($type . "campaigns", $data);
+    public function createBudgetRules(?array $data): array
+    {
+        return $this->operation('sp/budgetRules', $data, 'POST');
     }
 
     /**
-     * @param null|array $data
+     * Get all budget rules created by an advertiser
      * @return array
      * @throws Exception
      */
-    public function listCampaignsEx(?array $data = null) {
-        $type = $this->campaignTypePrefix ?: 'sp';
-        if ($this->spVersion == 'v3') {
-            $type = null;
-        } else {
-            $type = "v2/" . $type . "/";
-        }
-        return $this->operation($type . "campaigns/extended", $data);
+    public function getAllBudgetRules(): array
+    {
+        return $this->operation('sp/budgetRules');
     }
 
     /**
-     * @param $adGroupId
-     * @param null|array $data
-     * @return array
-     * @throws Exception
-     */
-    public function getAdGroup($adGroupId, ?array $data = null) {
-        $type = $this->campaignTypePrefix ?: 'sp';
-        if ($this->spVersion == 'v3') {
-            $type = null;
-        } else {
-            $type = "v2/" . $type . "/";
-        }
-        return $this->operation($type . "adGroups/{$adGroupId}");
-    }
-
-    /**
-     * @param $adGroupId
-     * @param null|array $data
-     * @return array
-     * @throws Exception
-     */
-    public function getAdGroupEx($adGroupId, ?array $data = null) {
-        //$type = $this->getCampaignTypeFromData($data);
-        $type = $this->campaignTypePrefix ?: 'sp';
-        if ($this->spVersion == 'v3') {
-            $type = null;
-        } else {
-            $type = "v2/" . $type . "/";
-        }
-        if (!$type && $this->apiVersion == 'v2') {
-            $this->logAndThrow("Unable to perform request. No type is set");
-        }
-        return $this->operation($type . "adGroups/extended/{$adGroupId}");
-    }
-
-    /**
+     * Updates one or more budget rules.
      * @param array $data
      * @return array
      * @throws Exception
      */
-    public function createAdGroups(array $data) {
-        //$type = $this->getCampaignTypeFromData($data);
-        $type = $this->campaignTypePrefix ?: 'sp';
-        if ($this->spVersion == 'v3') {
-            $type = null;
-        } else {
-            $type = "v2/" . $type . "/";
-        }
-        if (!$type && $this->apiVersion == 'v2') {
-            $this->logAndThrow("Unable to perform request. No type is set");
-        }
-        return $this->operation($type . "adGroups", $data, "POST");
+    public function updateBudgetRules(array $data): array
+    {
+        return $this->operation('sp/budgetRules', $data, 'PUT');
     }
 
     /**
+     * Gets all the campaigns associated with a budget rule
+     * @param $budgetRuleId
+     * @param array|null $data
+     * @return array
+     * @throws Exception
+     */
+    public function getAllCampaignsAssociatedByBudgetRuleId($budgetRuleId, ?array $data): array
+    {
+        return $this->operation("sp/budgetRules/$budgetRuleId/campaigns", $data);
+    }
+
+    /**
+     * Disassociates a budget rule specified by identifier from a campaign specified by identifier.
+     * @param $campaignId
+     * @param $budgetRuleId
+     * @param array|null $data
+     * @return array
+     * @throws Exception
+     */
+    public function deleteCampaignBudgetRuleByBudgetRuleId($campaignId, $budgetRuleId, ?array $data): array
+    {
+        return $this->operation("sp/campaigns/$campaignId/budgetRules/$budgetRuleId", $data, 'DELETE');
+    }
+
+    /**
+     * Gets the budget history for a campaign specified by identifier
+     * @param $campaignId
+     * @param array|null $data
+     * @return array
+     * @throws Exception
+     */
+    public function getBudgetHistoryByCampaignId($campaignId, ?array $data): array
+    {
+        return $this->operation("sp/campaigns/$campaignId/budgetRules/budgetHistory", $data);
+    }
+
+    /**
+     * Gets a budget rule specified by identifier.
+     * @param $budgetRuleId
+     * @param array|null $data
+     * @return array
+     * @throws Exception
+     */
+    public function getBudgetRuleByBudgetRuleId($budgetRuleId, ?array $data): array
+    {
+        return $this->operation("sp/budgetRules/$budgetRuleId", $data);
+    }
+
+    /**
+     * getBudgetRecommendation
+     * https://advertising.amazon.com/API/docs/en-us/sponsored-products/3-0/openapi/prod#tag/Budget-Recommendation-New-Campaigns/operation/getBudgetRecommendation
      * @param array $data
      * @return array
      * @throws Exception
      */
-    public function updateAdGroups(array $data) {
-       // $type = $this->getCampaignTypeFromData($data);
-        $type = $this->campaignTypePrefix ?: 'sp';
-        if ($this->spVersion == 'v3') {
-            $type = null;
-        } else {
-            if (isset($data['campaignType'])) {
-                unset($data['campaignType']);
-                $data = array_values($data);
-            }
-            $type = "v2/" . $type . "/";
-        }
-        if (!$type && $this->apiVersion == 'v2') {
-            $this->logAndThrow("Unable to perform request. No type is set");
-        }
-        return $this->operation($type . "adGroups", $data, "PUT");
+    public function getBudgetRecommendation(array $data): array
+    {
+        return $this->operation('sp/campaigns/initialBudgetRecommendation', $data, 'POST');
     }
 
     /**
-     * @param $adGroupId
-     * @param null|array $data
-     * @return array
-     * @throws Exception
-     */
-    public function archiveAdGroup($adGroupId, ?array $data = null) {
-        $type = $this->campaignTypePrefix ?: 'sp';
-        if ($this->spVersion == 'v3') {
-            $type = null;
-        } else {
-            $type = "v2/" . $type . "/";
-        }
-
-        if (!$type && $this->apiVersion == 'v2') {
-            $this->logAndThrow("Unable to perform request. No type is set");
-        }
-        return $this->operation($type . "adGroups/{$adGroupId}", null, "DELETE");
-    }
-
-    /**
-     * @param null|array $data
-     * @return array
-     * @throws Exception
-     */
-    public function listAdGroups(?array $data = null) {
-        $type = $this->campaignTypePrefix ?: 'sp';
-        if ($this->spVersion == 'v3') {
-            $type = null;
-        } else {
-            $type = "v2/" . $type . "/";
-        }
-
-        if (!$type && $this->apiVersion == 'v2') {
-            $this->logAndThrow("Unable to perform request. No type is set");
-        }
-        return $this->operation($type . "adGroups", $data);
-    }
-
-    /**
-     * @param null|array $data
-     * @return array
-     * @throws Exception
-     */
-    public function listAdGroupsEx(?array $data = null) {
-        $type = $this->campaignTypePrefix ?: 'sp';
-        if ($this->spVersion == 'v3') {
-            $type = null;
-        } else {
-            $type = "v2/" . $type . "/";
-        }
-        if (!$type && $this->apiVersion == 'v2') {
-            $this->logAndThrow("Unable to perform request. No type is set");
-        }
-        return $this->operation($type . "adGroups/extended", $data);
-    }
-
-    /**
-     * @param $keywordId
-     * @param null|array $data
-     * @return array
-     * @throws Exception
-     */
-    public function getBiddableKeyword($keywordId, ?array $data = null) {
-        $type = $this->campaignTypePrefix ?: 'sp';
-        if ($this->spVersion == 'v3') {
-            $type = null;
-        } else {
-            $type = "v2/" . $type . "/";
-        }
-        if (!$type && $this->apiVersion == 'v2') {
-            $this->logAndThrow("Unable to perform request. No type is set");
-        }
-        return $this->operation($type . "keywords/{$keywordId}");
-    }
-
-    /**
-     * @param $keywordId
-     * @param null|array $data
-     * @return array
-     * @throws Exception
-     */
-    public function getBiddableKeywordEx($keywordId, ?array $data = null) {
-        $type = $this->campaignTypePrefix ?: 'sp';
-        if ($this->spVersion == 'v3') {
-            $type = null;
-        } else {
-            $type = "v2/" . $type . "/";
-        }
-        if (!$type && $this->apiVersion == 'v2') {
-            $this->logAndThrow("Unable to perform request. No type is set");
-        }
-        return $this->operation($type . "keywords/extended/{$keywordId}");
-    }
-
-    /**
-     * @param $data
-     * @return array
-     * @throws Exception
-     */
-    public function createBiddableKeywords($data) {
-        $type = $this->campaignTypePrefix ?: 'sp';
-        if ($this->apiVersion == 'v1') {
-            $type = null;
-        } else {
-            if (isset($data['campaignType'])) {
-                unset($data['campaignType']);
-                $data = array_values($data);
-            }
-            $type = "v2/" . $type . "/";
-        }
-        if (!$type && $this->apiVersion == 'v2') {
-            $this->logAndThrow("Unable to perform request. No type is set");
-        }
-        return $this->operation($type . "keywords", $data, "POST");
-    }
-
-    /**
+     * Get recommended daily budget and estimated missed opportunities for campaigns.
+     * https://advertising.amazon.com/API/docs/en-us/sponsored-products/3-0/openapi/prod#tag/Budget-recommendations-and-missed-opportunities/operation/getBudgetRecommendations
      * @param array $data
      * @return array
      * @throws Exception
      */
-    public function updateBiddableKeywords(array $data) {
-        $type = $this->campaignTypePrefix ?: 'sp';
-        if ($this->apiVersion == 'v1') {
-            $type = null;
-        } else {
-            if (isset($data['campaignType'])) {
-                unset($data['campaignType']);
-                $data = array_values($data);
-            }
-            $type = "v2/" . $type . "/";
-        }
-        if (!$type && $this->apiVersion == 'v2') {
-            $this->logAndThrow("Unable to perform request. No type is set");
-        }
-        return $this->operation($type . "keywords", $data, "PUT");
+    public function getRecommendedDailyBudget(array $data): array
+    {
+        return $this->operation('sp/campaigns/budgetRecommendations', $data, 'POST');
     }
 
     /**
-     * @param $keywordId
-     * @param null|array $data
-     * @return array
-     * @throws Exception
-     */
-    public function archiveBiddableKeyword($keywordId, ?array $data = null) {
-        $type = $this->campaignTypePrefix ?: 'sp';
-        if ($this->spVersion == 'v3') {
-            $type = null;
-        } else {
-            $type = "v2/" . $type . "/";
-        }
-
-        if (!$type && $this->apiVersion == 'v2') {
-            $this->logAndThrow("Unable to perform request. No type is set");
-        }
-        return $this->operation($type . "keywords/{$keywordId}", null, "DELETE");
-    }
-
-    /**
-     * @param null|array $data
-     * @return array
-     * @throws Exception
-     */
-    public function listBiddableKeywords(?array $data = null) {
-        $type = $this->campaignTypePrefix ?: 'sp';
-        if ($this->apiVersion == 'v1') {
-            $type = null;
-        } else {
-            if (isset($data['campaignType'])) {
-                unset($data['campaignType']);
-            }
-            $type = "v2/" . $type . "/";
-        }
-        if (!$type && $this->apiVersion == 'v2') {
-            $this->logAndThrow("Unable to perform request. No type is set");
-        }
-        return $this->operation($type . "keywords", $data);
-    }
-
-    /**
-     * @param null|array $data
-     * @return array
-     * @throws Exception
-     */
-    public function listBiddableKeywordsEx(?array $data = null) {
-        $type = $this->campaignTypePrefix ?: 'sp';
-        if ($this->spVersion == 'v3') {
-            $type = null;
-        } else {
-            $type = "v2/" . $type . "/";
-        }
-
-        if (!$type && $this->apiVersion == 'v2') {
-            $this->logAndThrow("Unable to perform request. No type is set");
-        }
-        return $this->operation($type . "keywords/extended", $data);
-    }
-
-    /**
-     * @param $keywordId
-     * @param null|array $data
-     * @return array
-     * @throws Exception
-     */
-    public function getNegativeKeyword($keywordId, ?array $data = null) {
-        $type = $this->campaignTypePrefix ?: 'sp';
-        if ($this->apiVersion == 'v1') {
-            $type = null;
-        } else {
-            if (isset($data['campaignType'])) {
-                unset($data['campaignType']);
-            }
-            $type = "v2/" . $type . "/";
-        }
-        if (!$type && $this->apiVersion == 'v2') {
-            $this->logAndThrow("Unable to perform request. No type is set");
-        }
-        return $this->operation($type . "negativeKeywords/{$keywordId}");
-    }
-
-    /**
-     * @param $keywordId
-     * @param null|array $data
-     * @return array
-     * @throws Exception
-     */
-    public function getNegativeKeywordEx($keywordId, ?array $data = null) {
-        $type = $this->campaignTypePrefix ?: 'sp';
-        if ($this->apiVersion == 'v1') {
-            $type = null;
-        } else {
-            if (isset($data['campaignType'])) {
-                unset($data['campaignType']);
-            }
-            $type = "v2/". $type . "/";
-        }
-
-        if (!$type && $this->apiVersion == 'v2') {
-            $this->logAndThrow("Unable to perform request. No type is set");
-        }
-        return $this->operation($type . "negativeKeywords/extended/{$keywordId}");
-    }
-
-    /**
-     * @param $data
-     * @return array
-     * @throws Exception
-     */
-    public function createNegativeKeywords(array $data) {
-        $type = $this->campaignTypePrefix ?: 'sp';
-        if ($this->apiVersion == 'v1') {
-            $type = null;
-        } else {
-            if (isset($data['campaignType'])) {
-                unset($data['campaignType']);
-                $data = array_values($data);
-            }
-            $type = "v2/" . $type . "/";
-        }
-
-        if (!$type && $this->apiVersion == 'v2') {
-            $this->logAndThrow("Unable to perform request. No type is set");
-        }
-        return $this->operation($type . "negativeKeywords", $data, "POST");
-    }
-
-    /**
+     * Gets a list of special events with suggested date range and suggested budget increase for a campaign specified by identifier.
+     * https://advertising.amazon.com/API/docs/en-us/sponsored-products/3-0/openapi/prod#tag/BudgetRulesRecommendation/operation/SPGetBudgetRulesRecommendation
      * @param array $data
      * @return array
      * @throws Exception
      */
-    public function updateNegativeKeywords(array $data) {
-        $type = $this->campaignTypePrefix ?: 'sp';
-        if ($this->apiVersion == 'v1') {
-            $type = null;
-        } else {
-            if (isset($data['campaignType'])) {
-                unset($data['campaignType']);
-                $data = array_values($data);
-            }
-            $type = "v2/" . $type . "/";
-        }
-
-        if (!$type && $this->apiVersion == 'v2') {
-            $this->logAndThrow("Unable to perform request. No type is set");
-        }
-        return $this->operation($type . "negativeKeywords", $data, "PUT");
+    public function getCampaignsBudgetRulesRecommendations(array $data): array
+    {
+        return $this->operation('sp/campaigns/budgetRules/recommendations', $data, 'POST');
     }
 
     /**
-     * @param $keywordId
-     * @param null|array $data
+     * getCampaignRecommendations
+     * https://advertising.amazon.com/API/docs/en-us/sponsored-products/3-0/openapi/prod#tag/Consolidated-Recommendations/operation/getCampaignRecommendations
+     * @param array|null $data
      * @return array
      * @throws Exception
      */
-    public function archiveNegativeKeyword($keywordId, ?array $data = null) {
-        $type = $this->campaignTypePrefix ?: 'sp';
-        if ($this->apiVersion == 'v1') {
-            $type = null;
-        } else {
-            if (isset($data['campaignType'])) {
-                unset($data['campaignType']);
-                $data = array_values($data);
-            }
-            $type = "v2/" . $type . "/";
-        }
-
-        if (!$type && $this->apiVersion == 'v2') {
-            $this->logAndThrow("Unable to perform request. No type is set");
-        }
-        return $this->operation($type . "negativeKeywords/{$keywordId}", null, "DELETE");
+    public function getCampaignRecommendations(?array $data): array
+    {
+        return $this->operation('sp/campaign/recommendations', $data);
     }
 
     /**
-     * @param null|array $data
-     * @return array
-     * @throws Exception
-     */
-    public function listNegativeKeywords(?array $data = null) {
-        $type = $this->campaignTypePrefix ?: 'sp';
-        if ($this->apiVersion == 'v1') {
-            $type = null;
-        } else {
-            $type = "v2/" . $type . "/";
-        }
-
-        if (!$type && $this->apiVersion == 'v2') {
-            $this->logAndThrow("Unable to perform request. No type is set");
-        }
-        return $this->operation($type . "negativeKeywords", $data);
-    }
-
-    /**
-     * @param null|array $data
-     * @return array
-     * @throws Exception
-     */
-    public function listNegativeKeywordsEx(?array $data = null) {
-        $type = $this->campaignTypePrefix ?: 'sp';
-        if ($this->apiVersion == 'v1') {
-            $type = null;
-        } else {
-            $type = "v2/" . $type . "/";
-        }
-        if (!$type && $this->apiVersion == 'v2') {
-            $this->logAndThrow("Unable to perform request. No type is set");
-        }
-        return $this->operation($type . "negativeKeywords/extended", $data);
-    }
-
-    /**
-     * @param $keywordId
-     * @param null|array $data
-     * @return array
-     * @throws Exception
-     */
-    public function getCampaignNegativeKeyword($keywordId, ?array $data = null) {
-        $type = $this->campaignTypePrefix ?: 'sp';
-        if ($this->apiVersion == 'v1') {
-            $type = null;
-        } else {
-            $type = "v2/" . $type . "/";
-        }
-
-        if (!$type && $this->apiVersion == 'v2') {
-            $this->logAndThrow("Unable to perform request. No type is set");
-        }
-        return $this->operation($type . "campaignNegativeKeywords/{$keywordId}");
-    }
-
-    /**
-     * @param $keywordId
-     * @param null|array $data
-     * @return array
-     * @throws Exception
-     */
-    public function getCampaignNegativeKeywordEx($keywordId, ?array $data = null) {
-        $type = $this->campaignTypePrefix ?: 'sp';
-        if ($this->apiVersion == 'v1') {
-            $type = null;
-        } else {
-            if (isset($data['campaignType'])) {
-                unset($data['campaignType']);
-            }
-            $type = "v2/" . $type . "/";
-        }
-        if (!$type && $this->apiVersion == 'v2') {
-            $this->logAndThrow("Unable to perform request. No type is set");
-        }
-        return $this->operation($type . "campaignNegativeKeywords/extended/{$keywordId}");
-    }
-
-    /**
+     * Suggested target ASINs for your advertised product
+     * https://advertising.amazon.com/API/docs/en-us/sponsored-products/3-0/openapi/prod#tag/Product-Recommendation-Service/operation/getProductRecommendations
      * @param array $data
      * @return array
      * @throws Exception
      */
-    public function createCampaignNegativeKeywords(array $data) {
-        $type = $this->campaignTypePrefix ?: 'sp';
-        if ($this->apiVersion == 'v1') {
-            $type = null;
-        } else {
-            if (isset($data['campaignType'])) {
-                unset($data['campaignType']);
-                $data = array_values($data);
-            }
-            $type = $type . "/";
-        }
-
-        if (!$type && $this->apiVersion == 'v2') {
-            $this->logAndThrow("Unable to perform request. No type is set");
-        }
-        return $this->operation($type . "campaignNegativeKeywords", $data, "POST");
+    public function getTargetsProductsRecommendations(array $data): array
+    {
+        return $this->operation('sp/targets/products/recommendations', $data, 'POST');
     }
 
     /**
+     * Budget usage API for SP campaigns
+     * https://advertising.amazon.com/API/docs/en-us/sponsored-products/3-0/openapi/prod#tag/Budget-Usage/operation/spCampaignsBudgetUsage
      * @param array $data
      * @return array
      * @throws Exception
      */
-    public function updateCampaignNegativeKeywords(array $data) {
-        $type = $this->campaignTypePrefix ?: 'sp';
-        if ($this->apiVersion == 'v1') {
-            $type = null;
-        } else {
-            if (isset($data['campaignType'])) {
-                unset($data['campaignType']);
-                $data = array_values($data);
-            }
-            $type = $type . "/";
-        }
-
-        if (!$type && $this->apiVersion == 'v2') {
-            $this->logAndThrow("Unable to perform request. No type is set");
-        }
-        return $this->operation($type . "campaignNegativeKeywords", $data, "PUT");
-    }
-
-    /**
-     * @param $keywordId
-     * @param null|array $data
-     * @return array
-     * @throws Exception
-     */
-    public function removeCampaignNegativeKeyword($keywordId, ?array $data = null) {
-        $type = $this->campaignTypePrefix ?: 'sp';
-        if ($this->apiVersion == 'v1') {
-            $type = null;
-        } else {
-            if (isset($data['campaignType'])) {
-                unset($data['campaignType']);
-            }
-            $type = $type . "/";
-        }
-
-        if (!$type && $this->apiVersion == 'v2') {
-            $this->logAndThrow("Unable to perform request. No type is set");
-        }
-        return $this->operation($type . "campaignNegativeKeywords/{$keywordId}", null, "DELETE");
-    }
-
-    /**
-     * @param null|array $data
-     * @return array
-     * @throws Exception
-     */
-    public function listCampaignNegativeKeywords(?array $data = null) {
-        $type = $this->campaignTypePrefix ?: 'sp';
-        if ($this->apiVersion == 'v1') {
-            $type = null;
-        } else {
-            $type = $type . "/";
-        }
-
-        if (!$type && $this->apiVersion == 'v2') {
-            $this->logAndThrow("Unable to perform request. No type is set");
-        }
-        return $this->operation($type . "campaignNegativeKeywords", $data);
-    }
-
-    /**
-     * @param null|array $data
-     * @return array
-     * @throws Exception
-     */
-    public function listCampaignNegativeKeywordsEx(?array $data = null) {
-        $type = $this->campaignTypePrefix ?: 'sp';
-        if ($this->apiVersion == 'v1') {
-            $type = null;
-        } else {
-            $type = $type . "/";
-        }
-
-        if (!$type && $this->apiVersion == 'v2') {
-            $this->logAndThrow("Unable to perform request. No type is set");
-        }
-        return $this->operation($type . "campaignNegativeKeywords/extended", $data);
-    }
-
-    /**
-     * @param $productAdId
-     * @param null|array $data
-     * @return array
-     * @throws Exception
-     */
-    public function getProductAd($productAdId, ?array $data = null) {
-        $type = $this->campaignTypePrefix ?: 'sp';
-        $type = $this->spVersion == 'v3' ? $type : "v2/" . $type . "/";
-        if (isset($data['campaignType'])) {
-            unset($data['campaignType']);
-        }
-        return $this->operation($type . "productAds/{$productAdId}");
-    }
-
-    /**
-     * @param $productAdId
-     * @param null|array $data
-     * @return array
-     * @throws Exception
-     */
-    public function getProductAdEx($productAdId, ?array $data = null) {
-        $type = $this->campaignTypePrefix ?: 'sp';
-        $type = $this->spVersion == 'v3' ? $type : "v2/" . $type . "/";
-        if (isset($data['campaignType'])) {
-            unset($data['campaignType']);
-        }
-        return $this->operation("productAds/extended/{$productAdId}");
-    }
-
-    /**
-     * @param array $data
-     * @return array
-     * @throws Exception
-     */
-    public function createProductAds(array $data) {
-        $type = $this->campaignTypePrefix ?: 'sp';
-        $type = $this->spVersion == 'v3' ? $type : "v2/" . $type . "/";
-        if (isset($data['campaignType'])) {
-            unset($data['campaignType']);
-        }
-        return $this->operation($type . "productAds", $data, "POST");
-    }
-
-    /**
-     * @param array $data
-     * @return array
-     * @throws Exception
-     */
-    public function updateProductAds(array $data) {
-        $type = $this->campaignTypePrefix ?: 'sp';
-        $type = $this->spVersion == 'v3' ? $type : "v2/" . $type . "/";
-        if (isset($data['campaignType'])) {
-            unset($data['campaignType']);
-        }
-        return $this->operation($type . "productAds", $data, "PUT");
-    }
-
-    /**
-     * @param $productAdId
-     * @param null|array $data
-     * @return array
-     * @throws Exception
-     */
-    public function archiveProductAd($productAdId, ?array $data = null) {
-        $type = $this->campaignTypePrefix ?: 'sp';
-        $type = $this->spVersion == 'v3' ? $type : "v2/" . $type . "/";
-        if (isset($data['campaignType'])) {
-            unset($data['campaignType']);
-        }
-        return $this->operation($type . "productAds/{$productAdId}", null, "DELETE");
-    }
-
-    /**
-     * @param null|array $data
-     * @return array
-     * @throws Exception
-     */
-    public function listProductAds(?array $data = null) {
-        $type = $this->campaignTypePrefix ?: 'sp';
-        $type = $this->spVersion == 'v3' ? $type : "v2/" . $type . "/";
-        return $this->operation($type . "productAds", $data);
-    }
-
-    /**
-     * @param null|array $data
-     * @return array
-     * @throws Exception
-     */
-    public function listProductAdsEx(?array $data = null) {
-        $type = $this->campaignTypePrefix ?: 'sp';
-        $type = $this->spVersion == 'v3' ? $type : "v2/" . $type . "/";
-        return $this->operation($type . "productAds/extended", $data);
-    }
-
-    /**
-     * @param $adGroupId
-     * @return array
-     * @throws Exception
-     */
-    public function getAdGroupBidRecommendations($adGroupId) {
-        return $this->operation("adGroups/{$adGroupId}/bidRecommendations");
-    }
-
-    /**
-     * @param $keywordId
-     * @return array
-     * @throws Exception
-     */
-    public function getKeywordBidRecommendations($keywordId) {
-        return $this->operation("keywords/{$keywordId}/bidRecommendations");
-    }
-
-    /**
-     * @param $adGroupId
-     * @param $data
-     * @return array
-     * @throws Exception
-     */
-    public function bulkGetKeywordBidRecommendations($adGroupId, $data) {
-        $data = array(
-            "adGroupId" => $adGroupId,
-            "keywords"  => $data
-        );
-        return $this->operation("keywords/bidRecommendations", $data, "POST");
-    }
-
-    /**
-     * @param $data
-     * @return array
-     * @throws Exception
-     */
-    public function getAdGroupKeywordSuggestions($data) {
-        $adGroupId = $data["adGroupId"];
-        unset($data["adGroupId"]);
-        return $this->operation("adGroups/{$adGroupId}/suggested/keywords", $data);
-    }
-
-    /**
-     * @param array $data
-     * @return array
-     * @throws Exception
-     */
-    public function getAdGroupKeywordSuggestionsEx(array $data) {
-        $adGroupId = $data["adGroupId"];
-        unset($data["adGroupId"]);
-        return $this->operation("adGroups/{$adGroupId}/suggested/keywords/extended", $data);
-    }
-
-    /**
-     * @param array $data
-     * @return array
-     * @throws Exception
-     */
-    public function getAsinKeywordSuggestions(array $data) {
-        $asin = $data["asin"];
-        unset($data["asin"]);
-        return $this->operation("asins/{$asin}/suggested/keywords", $data);
-    }
-
-    /**
-     * @param array $data
-     * @return array
-     * @throws Exception
-     */
-    public function bulkGetAsinKeywordSuggestions(array $data) {
-        return $this->operation("asins/suggested/keywords", $data, "POST");
+    public function getCampaignsBudgetUsage(array $data): array
+    {
+        return $this->operation('sp/campaigns/budget/usage', $data, 'POST');
     }
 
     /**
      * GET /v2/stores
-     * @param array|null $data
+     * @param array $data
      * @return array
      * @throws Exception
      */
-    public function getStores(?array $data = null) {
+    public function getStores(array $data): array
+    {
         return $this->operation("v2/stores", $data);
     }
 
@@ -854,18 +726,20 @@ trait SponsoredProductsRequests {
      * @return array
      * @throws Exception
      */
-    public function getStoresByBrandEntityId(string $brandEntityId) {
-        return $this->operation("v2/stores/{$brandEntityId}");
+    public function getStoresByBrandEntityId(string $brandEntityId): array
+    {
+        return $this->operation("v2/stores/$brandEntityId");
     }
 
     /**
      * @param $recordType
-     * @param null|array $data
+     * @param array $data
      * @return array
      * @throws Exception
      */
-    public function requestSnapshot($recordType, ?array $data = null) {
-        return $this->operation("{$recordType}/snapshot", $data, "POST");
+    public function requestSnapshot($recordType, array $data): array
+    {
+        return $this->operation("$recordType/snapshot", $data, 'POST');
     }
 
     /**
@@ -873,8 +747,9 @@ trait SponsoredProductsRequests {
      * @return array
      * @throws Exception
      */
-    public function getSnapshot($snapshotId) {
-        $req = $this->operation("snapshots/{$snapshotId}");
+    public function getSnapshot($snapshotId): array
+    {
+        $req = $this->operation("snapshots/$snapshotId");
         if ($req["success"]) {
             $json = json_decode($req["response"], true);
             if ($json["status"] == "SUCCESS") {
@@ -886,11 +761,12 @@ trait SponsoredProductsRequests {
 
     /**
      * @param $recordType
-     * @param null|array $data
+     * @param array $data
      * @return array
      * @throws Exception
      */
-    public function requestReport($recordType, ?array $data = null) {
+    public function requestReport($recordType, array $data): array
+    {
         $type = $this->getCampaignTypeForReportRequest($data);
         if ($this->reportsVersion == 'v3') {
             $type = null;
@@ -901,24 +777,24 @@ trait SponsoredProductsRequests {
                 $type = $type . "/";
             }
 
-            if (is_array($data) && isset($data['reportType'])) {
+            if (isset($data['reportType'])) {
                 unset($data['reportType']);
             }
         }
         if (!$type && $this->reportsVersion == 'v2') {
             $this->logAndThrow("Unable to perform request. No type is set");
         }
-        return $this->operation($type . "{$recordType}/report", $data, "POST");
+        return $this->operation($type . "$recordType/report", $data, 'POST');
     }
 
     /**
-     * @param $recordType
-     * @param array|null $data
+     * @param array $data
      * @return array
      * @throws Exception
      */
-    public function requestOffineReport(array $data) {
-        return $this->operation( "reporting/reports", $data, "POST");
+    public function requestOfflineReport(array $data): array
+    {
+        return $this->operation("reporting/reports", $data, 'POST');
     }
 
     /**
@@ -926,7 +802,8 @@ trait SponsoredProductsRequests {
      * @return string
      * @throws Exception
      */
-    private function getCampaignTypeForReportRequest(?array $data): string {
+    private function getCampaignTypeForReportRequest(?array $data): string
+    {
         $reportType = is_array($data) && isset($data['reportType'])
             ? $data['reportType']
             : Client::CAMPAIGN_TYPE_SPONSORED_PRODUCTS;
@@ -946,14 +823,15 @@ trait SponsoredProductsRequests {
      * @return array
      * @throws Exception
      */
-    public function getReport($reportId) {
+    public function getReport($reportId): array
+    {
         if ($this->reportsVersion != $this->apiVersion) {
             $type = $this->reportsVersion . "/";
         } else {
             $type = '/';
         }
 
-        $req = $this->operation($type . "reports/{$reportId}");
+        $req = $this->operation($type . "reports/$reportId");
         if ($req["success"]) {
             $json = json_decode($req["response"], true);
             if ($json["status"] == "SUCCESS") {
@@ -966,9 +844,11 @@ trait SponsoredProductsRequests {
     /**
      * @param $reportId
      * @return array
+     * @throws Exception
      */
-    public function getOfflineReport($reportId) {
-        $req =  $this->operation("reporting/reports/{$reportId}");
+    public function getOfflineReport($reportId): array
+    {
+        $req = $this->operation("reporting/reports/$reportId");
         if ($req["success"]) {
             $json = json_decode($req["response"], true);
             if ($json["status"] == "COMPLETED") {
@@ -981,11 +861,12 @@ trait SponsoredProductsRequests {
     //portfolios part
 
     /**
-     * @param null|array $data
+     * @param array $data
      * @return array
      * @throws Exception
      */
-    public function listPortfolios(?array $data = null) {
+    public function listPortfolios(array $data): array
+    {
         if ($this->portfoliosVersion == 'v3') {
             $type = null;
         } else {
@@ -995,11 +876,12 @@ trait SponsoredProductsRequests {
     }
 
     /**
-     * @param null|array $data
+     * @param array $data
      * @return array
      * @throws Exception
      */
-    public function listPortfoliosEx(?array $data = null) {
+    public function listPortfoliosEx(array $data): array
+    {
         if ($this->portfoliosVersion == 'v3') {
             $type = null;
         } else {
@@ -1013,7 +895,8 @@ trait SponsoredProductsRequests {
      * @return array
      * @throws Exception
      */
-    public function getPortfolio(int $portfolioId) {
+    public function getPortfolio(int $portfolioId): array
+    {
         if ($this->portfoliosVersion == 'v3') {
             $type = null;
         } else {
@@ -1027,7 +910,8 @@ trait SponsoredProductsRequests {
      * @return array
      * @throws Exception
      */
-    public function getPortfolioEx(int $portfolioId) {
+    public function getPortfolioEx(int $portfolioId): array
+    {
         if ($this->portfoliosVersion == 'v3') {
             $type = null;
         } else {
@@ -1041,7 +925,8 @@ trait SponsoredProductsRequests {
      * @return array
      * @throws Exception
      */
-    public function createPortfolios(array $data) {
+    public function createPortfolios(array $data): array
+    {
         if ($this->portfoliosVersion == 'v3') {
             $type = null;
         } else {
@@ -1055,7 +940,8 @@ trait SponsoredProductsRequests {
      * @return array
      * @throws Exception
      */
-    public function updatePortfolios(array $data) {
+    public function updatePortfolios(array $data): array
+    {
         if ($this->portfoliosVersion == 'v3') {
             $type = null;
         } else {
@@ -1074,106 +960,11 @@ trait SponsoredProductsRequests {
      * @return array
      * @throws Exception
      */
-    public function generateTargetsProductRecommendations(array $data): array {
+    public function generateTargetsProductRecommendations(array $data): array
+    {
         return $this->operation("sp/targets/productRecommendations", $data, 'POST');
     }
 
-    /**
-     * GET https://advertising-api.amazon.com/v2/sp/targets/{targetId}
-     * @see https://advertising.amazon.com/API/docs/v2/reference/product_attribute_targeting#getTargetingClause
-     *
-     * @param int $targetId
-     * @return array
-     * @throws Exception
-     */
-    public function getTargetingClause(int $targetId): array {
-        return $this->operation("sp/targets/" . $targetId);
-    }
-
-    /**
-     * GET https://advertising-api.amazon.com/v2/sp/targets/extended/{targetId}
-     * @see https://advertising.amazon.com/API/docs/v2/reference/product_attribute_targeting#getTargetingClauseEx
-     *
-     * @param int $targetId
-     * @return array
-     * @throws Exception
-     */
-    public function getTargetingClauseEx(int $targetId): array {
-        return $this->operation("sp/targets/extended/" . $targetId);
-    }
-
-    /**
-     * GET https://advertising-api.amazon.com/v2/sp/targets
-     * @see https://advertising.amazon.com/API/docs/v2/reference/product_attribute_targeting#listTargetingClauses
-     *
-     * @param array|null $data
-     * @return array
-     * @throws Exception
-     */
-    public function listTargetingClauses(?array $data = null): array {
-        return $this->operation("sp/targets", $data);
-    }
-
-    /**
-     * GET https://advertising-api.amazon.com/v2/sp/targets/extended
-     * @see https://advertising.amazon.com/API/docs/v2/reference/product_attribute_targeting#listTargetingClausesEx
-     *
-     * @param array|null $data
-     * @return array
-     * @throws Exception
-     */
-    public function listTargetingClausesEx(?array $data = null): array {
-        return $this->operation("sp/targets/extended", $data);
-    }
-
-    /**
-     * POST https://advertising-api.amazon.com/v2/sp/targets
-     * @see https://advertising.amazon.com/API/docs/v2/reference/product_attribute_targeting#createTargetingClauses
-     *
-     * @param array $data
-     * @return array
-     * @throws Exception
-     */
-    public function createTargetingClauses(array $data): array {
-        return $this->operation("sp/targets", $data, 'POST');
-    }
-
-    /**
-     * PUT https://advertising-api.amazon.com/v2/sp/targets
-     * @see https://advertising.amazon.com/API/docs/v2/reference/product_attribute_targeting#updateTargetingClauses
-     *
-     * @param array $data
-     * @return array
-     * @throws Exception
-     */
-    public function updateTargetingClauses(array $data): array {
-        return $this->operation("sp/targets", $data, 'PUT');
-    }
-
-    /**
-     * DELETE https://advertising-api.amazon.com/v2/sp/targets
-     * @see https://advertising.amazon.com/API/docs/v2/reference/product_attribute_targeting#archiveTargetingClause
-     *
-     * @param int $targetId
-     * @return array
-     * @throws Exception
-     */
-    public function archiveTargetingClause(int $targetId): array {
-        return $this->operation("sp/targets/" . $targetId, 'DELETE');
-    }
-
-
-    /**
-     * GET https://advertising-api.amazon.com/v2/sp/targets/categories
-     * @see https://advertising.amazon.com/API/docs/v2/reference/product_attribute_targeting#getTargetingCategories
-     *
-     * @param array $data
-     * @return array
-     * @throws Exception
-     */
-    public function getTargetingCategories(array $data): array {
-        return $this->operation("sp/targets/categories", $data);
-    }
 
     /**
      * GET https://advertising-api.amazon.com/v2/sp/targets/brands
@@ -1183,181 +974,8 @@ trait SponsoredProductsRequests {
      * @return array
      * @throws Exception
      */
-    public function getBrandRecommendations(array $data): array {
+    public function getBrandRecommendations(array $data): array
+    {
         return $this->operation("sp/targets/brands", $data);
-    }
-
-    /**
-     * GET https://advertising-api.amazon.com/v2/sp/targets/{targetId}
-     * @see https://advertising.amazon.com/API/docs/v2/reference/product_attribute_targeting#getNegativeTargetingClause
-     *
-     * @param int $targetId
-     * @return array
-     * @throws Exception
-     */
-    public function getNegativeTargetingClause(int $targetId): array {
-        return $this->operation("sp/negativeTargets/" . $targetId);
-    }
-
-    /**
-     * GET https://advertising-api.amazon.com/v2/sp/negativeTargets/extended/{targetId}
-     * @see https://advertising.amazon.com/API/docs/v2/reference/product_attribute_targeting#getNegativeTargetingClauseEx
-     *
-     * @param int $targetId
-     * @return array
-     * @throws Exception
-     */
-    public function getNegativeTargetingClauseEx(int $targetId): array {
-        return $this->operation("sp/negativeTargets/extended/" . $targetId);
-    }
-
-    /**
-     * GET https://advertising-api.amazon.com/v2/sp/negativeTargets
-     * @see https://advertising.amazon.com/API/docs/v2/reference/product_attribute_targeting#listNegativeTargetingClauses
-     *
-     * @param array|null $data
-     * @return array
-     * @throws Exception
-     */
-    public function listNegativeTargetingClauses(?array $data = null): array {
-        return $this->operation("sp/negativeTargets", $data);
-    }
-
-    /**
-     * GET https://advertising-api.amazon.com/v2/sp/negativeTargets/extended
-     * @see https://advertising.amazon.com/API/docs/v2/reference/product_attribute_targeting#listNegativeTargetingClausesEx
-     *
-     * @param array|null $data
-     * @return array
-     * @throws Exception
-     */
-    public function listNegativeTargetingClausesEx(?array $data = null): array {
-        return $this->operation("sp/negativeTargets/extended", $data);
-    }
-
-    //
-
-    /**
-     * POST https://advertising-api.amazon.com/v2/sp/negativeTargets
-     * @see https://advertising.amazon.com/API/docs/v2/reference/product_attribute_targeting#createNegativeTargetingClauses
-     *
-     * @param array $data
-     * @return array
-     * @throws Exception
-     */
-    public function createNegativeTargetingClauses(array $data): array {
-        return $this->operation("sp/negativeTargets", $data, 'POST');
-    }
-
-    /**
-     * PUT https://advertising-api.amazon.com/v2/sp/negativeTargets
-     * @see https://advertising.amazon.com/API/docs/v2/reference/product_attribute_targeting#updateNegativeTargetingClauses
-     *
-     * @param array $data
-     * @return array
-     * @throws Exception
-     */
-    public function updateNegativeTargetingClauses(array $data): array {
-        return $this->operation("sp/negativeTargets", $data, 'PUT');
-    }
-
-    /**
-     * DELETE https://advertising-api.amazon.com/v2/sp/negativeTargets
-     * @see https://advertising.amazon.com/API/docs/v2/reference/product_attribute_targeting#archiveNegativeTargetingClause
-     *
-     * @param int $targetId
-     * @return array
-     * @throws Exception
-     */
-    public function archiveNegativeTargetingClause(int $targetId): array {
-        return $this->operation("sp/negativeTargets/" . $targetId, 'DELETE');
-    }
-
-    //campaign negative products
-
-    /**
-     * GET https://advertising-api.amazon.com/v2/sp/campaignNegatuveTargets/{targetId}
-     * @see https://advertising.amazon.com/API/docs/v2/reference/product_attribute_targeting#getNegativeTargetingClause
-     *
-     * @param int $targetId
-     * @return array
-     * @throws Exception
-     */
-    public function getCampaignNegativeTargetingClause(int $targetId): array {
-        return $this->operation("sp/campaignNegativeTargets/" . $targetId);
-    }
-
-    /**
-     * GET https://advertising-api.amazon.com/v2/sp/campaignNegativeTargets/extended/{targetId}
-     * @see https://advertising.amazon.com/API/docs/v2/reference/product_attribute_targeting#getNegativeTargetingClauseEx
-     *
-     * @param int $targetId
-     * @return array
-     * @throws Exception
-     */
-    public function getCampaignNegativeTargetingClauseEx(int $targetId): array {
-        return $this->operation("sp/campaignNegativeTargets/extended/" . $targetId);
-    }
-
-    /**
-     * GET https://advertising-api.amazon.com/v2/sp/campaignNegativeTargets
-     * @see https://advertising.amazon.com/API/docs/v2/reference/product_attribute_targeting#listNegativeTargetingClauses
-     *
-     * @param array|null $data
-     * @return array
-     * @throws Exception
-     */
-    public function listCampaignNegativeTargetingClauses(?array $data = null): array {
-        return $this->operation("sp/campaignNegativeTargets", $data);
-    }
-
-    /**
-     * GET https://advertising-api.amazon.com/v2/sp/campaignNegativeTargets/extended
-     * @see https://advertising.amazon.com/API/docs/v2/reference/product_attribute_targeting#listNegativeTargetingClausesEx
-     *
-     * @param array|null $data
-     * @return array
-     * @throws Exception
-     */
-    public function listCampaignNegativeTargetingClausesEx(?array $data = null): array {
-        return $this->operation("sp/campaignNegativeTargets/extended", $data);
-    }
-
-    //
-
-    /**
-     * POST https://advertising-api.amazon.com/v2/sp/campaignNegativeTargets
-     * @see https://advertising.amazon.com/API/docs/v2/reference/product_attribute_targeting#createNegativeTargetingClauses
-     *
-     * @param array $data
-     * @return array
-     * @throws Exception
-     */
-    public function createCampaignNegativeTargetingClauses(array $data): array {
-        return $this->operation("sp/campaignNegativeTargets", $data, 'POST');
-    }
-
-    /**
-     * PUT https://advertising-api.amazon.com/v2/sp/campaignNegativeTargets
-     * @see https://advertising.amazon.com/API/docs/v2/reference/product_attribute_targeting#updateNegativeTargetingClauses
-     *
-     * @param array $data
-     * @return array
-     * @throws Exception
-     */
-    public function updateCampaignNegativeTargetingClauses(array $data): array {
-        return $this->operation("sp/campaignNegativeTargets", $data, 'PUT');
-    }
-
-    /**
-     * DELETE https://advertising-api.amazon.com/v2/sp/campaignNegativeTargets
-     * @see https://advertising.amazon.com/API/docs/v2/reference/product_attribute_targeting#archiveNegativeTargetingClause
-     *
-     * @param int $targetId
-     * @return array
-     * @throws Exception
-     */
-    public function archiveCampaignNegativeTargetingClause(int $targetId): array {
-        return $this->operation("sp/campaignNegativeTargets/" . $targetId, 'DELETE');
     }
 }

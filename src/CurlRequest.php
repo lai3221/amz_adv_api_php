@@ -24,8 +24,8 @@ class CurlRequest
         curl_setopt($this->handle, CURLOPT_SSL_VERIFYHOST, 2);
         curl_setopt($this->handle, CURLOPT_RETURNTRANSFER, true);
         curl_setopt($this->handle, CURLOPT_HEADER, false);
-        if($config['isUseProxy'] && $config['curlProxy'] && $config['curlProxyType']){
-            switch ($config['curlProxyType']){
+        if ($config['isUseProxy'] && $config['curlProxy'] && $config['curlProxyType']) {
+            switch ($config['curlProxyType']) {
                 default:
                 case 'http':
                     $curlType = CURLPROXY_HTTP;
