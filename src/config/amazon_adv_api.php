@@ -7,7 +7,7 @@ return [
     'refreshToken' => null,
     'sandbox' => false,
     'saveFile' => false,
-    'apiVersion' => 'v1',
+    'apiVersion' => '',
     'sbVersion' => '',
     'spVersion' => '',
     'sdVersion' => '',

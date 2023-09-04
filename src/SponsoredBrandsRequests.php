@@ -13,7 +13,7 @@ trait SponsoredBrandsRequests
     /**
      * Gets an array of ad groups associated with the client identifier passed in
      * the authorization header, filtered by specified criteria.
-     * @see https://advertising.amazon.com/API/docs/en-us/sponsored-brands/3-0/openapi#/Campaigns/listAdGroups
+     * @see https://advertising.amazon.com/API/docs/en-us/sponsored-brands/3-0/openapi/prod#tag/AdGroups/operation/ListSponsoredBrandsAdGroups
      * @param null $data
      * @return array
      * @throws Exception

@@ -4,14 +4,9 @@ namespace AmazonAdvertisingApi;
 
 use Exception;
 
-require_once "Versions.php";
-require_once "Regions.php";
-require_once "CurlRequest.php";
-require_once "SponsoredProductsRequests.php";
-require_once "SponsoredBrandsRequests.php";
-require_once "SponsoredDisplayRequests.php";
-require_once "ProductEligibilityRequests.php";
-require_once "ProfileRequests.php";
+require_once 'Versions.php';
+require_once 'Regions.php';
+require_once 'CurlRequest.php';
 
 /**
  * Class Client
@@ -23,7 +18,8 @@ class Client
     use SponsoredBrandsRequests;
     use SponsoredDisplayRequests;
     use ProductEligibilityRequests;
-    use ProfileRequests;
+    use AccountRequests;
+    use ReportingRequests;
 
     public const CAMPAIGN_TYPE_SPONSORED_PRODUCTS_FULL = 'sponsoredProducts';
     public const CAMPAIGN_TYPE_SPONSORED_BRANDS_FULL = 'sponsoredBrands';
@@ -54,22 +50,21 @@ class Client
         'headerAccept' => '',
     ];
 
-    private $apiVersion = null;
-    private $sbVersion = null;
-    private $sdVersion = null;
-    private $spVersion = null;
-    private $portfoliosVersion = null;
-    private $reportsVersion = null;
-    private $applicationVersion = null;
-    private $userAgent = null;
+    private $apiVersion;
+    private $sbVersion;
+    private $sdVersion;
+    private $spVersion;
+    private $portfoliosVersion;
+    private $reportsVersion;
+    private $applicationVersion;
+    private $userAgent;
     private $isUseProxy = false;
     private $endpoint = null;
     private $tokenUrl = null;
     private $requestId = null;
-    private $endpoints = null;
-    private $versionStrings = null;
-    public $campaignTypePrefix;
-    private $headerAccept = null;
+    private $endpoints;
+    private $versionStrings;
+    private $headerAccept;
     public $profileId = null;
     public $headers = [];
 
@@ -85,7 +80,7 @@ class Client
         $this->endpoints = $regions->endpoints;
         $versions = new Versions();
         $this->versionStrings = $versions->versionStrings;
-        $this->apiVersion = $config['apiVersion'] ?? null;
+        $this->apiVersion = $config['apiVersion'] ?? '';
         $this->sbVersion = $config['sdVersion'] ?? '';
         $this->spVersion = $config['spVersion'] ?? '';
         $this->portfoliosVersion = $config['portfoliosVersion'] ?? '';
@@ -99,7 +94,6 @@ class Client
         $this->setEndpoints();
 
         if (is_null($this->config["accessToken"]) && !is_null($this->config["refreshToken"])) {
-            /* convenience */
             $this->doRefreshToken();
         }
     }
@@ -122,17 +116,17 @@ class Client
     public function doRefreshToken(): array
     {
         $headers = array(
-            "Content-Type: application/x-www-form-urlencoded;charset=UTF-8",
+            'Content-Type: application/x-www-form-urlencoded;charset=UTF-8',
             "User-Agent: $this->userAgent"
         );
 
         $refresh_token = rawurldecode($this->config["refreshToken"]);
 
         $params = array(
-            "grant_type" => "refresh_token",
-            "refresh_token" => $refresh_token,
-            "client_id" => $this->config["clientId"],
-            "client_secret" => $this->config["clientSecret"]
+            'grant_type' => 'refresh_token',
+            'refresh_token' => $refresh_token,
+            'client_id' => $this->config['clientId'],
+            'client_secret' => $this->config['clientSecret']
         );
 
         $data = "";
@@ -179,7 +173,6 @@ class Client
             $response["response"] = gzdecode($response["response"]);
             return $response;
         }
-
         return $this->executeRequest($request);
     }
 
@@ -240,18 +233,18 @@ class Client
     private function operation(string $interface, ?array $params = [], string $method = "GET", bool $needAccept = true): array
     {
         $headers = array(
-            "Authorization: bearer $this->config['accessToken']",
-            "User-Agent: $this->userAgent",
-            "Amazon-Advertising-API-ClientId:$this->config['clientId']",
+            'Authorization: bearer ' . $this->config['accessToken'],
+            'User-Agent: ' . $this->userAgent,
+            'Amazon-Advertising-API-ClientId: ' . $this->config['clientId'],
         );
         if (!is_null($this->profileId)) {
-            $headers[] = "Amazon-Advertising-API-Scope: $this->profileId";
+            $headers[] = 'Amazon-Advertising-API-Scope: ' . $this->profileId;
         }
         if ($this->headerAccept) {
             if ($needAccept) {
-                $headers[] = "Accept: $this->headerAccept";
+                $headers[] = 'Accept: ' . $this->headerAccept;
             }
-            $headers[] = "Content-Type: $this->headerAccept";
+            $headers[] = 'Content-Type: ' . $this->headerAccept;
         }
         $this->headers = $headers;
         $request = new CurlRequest($this->config);

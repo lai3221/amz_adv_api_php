@@ -2,7 +2,7 @@
 
 Official Amazon Advertising API PHP client library.
 
-Sponsored Products（V3）
+Version 3.0 OAS 3.0.1
 
 ## Requirements
 
@@ -26,17 +26,7 @@ The following country codes are available for testing.
 <br/>
 > US, CA, UK, DE, FR, ES, IT, IN, CN, JP<br/>
 
-```PHP
-$client->registerProfile(array("countryCode" => "IT"));
-```
->
-```
-{
-  "registerProfileId": "5cf1aca5-4ab8-4489-8c33-013d1f85c586JP",
-  "status": "IN_PROGRESS",
-  "statusDetails": "Registration workflow has been started"
-}
-```
+
 
 ## Quick Start
 #### Instantiate the client
@@ -49,12 +39,26 @@ namespace AmazonAdvertisingApi;
 require_once "src/Client.php";
 
 $config = array(
-    "clientId" => "CLIENT_ID",
-    "clientSecret" => "CLIENT_SECRET",
-    "refreshToken" => "REFRESH_TOKEN",
-    "region" => "na",
-    "sandbox" => false,
-    "headerAccept" => "" //optional
+    'clientId' => 'CLIENT_ID',
+    'clientSecret' => 'CLIENT_SECRET',
+    'region' => 'NA',
+    'accessToken' => 'ACCESS_TOKEN',
+    'refreshToken' => 'REFRESH_TOKEN',
+    'sandbox' => false,
+    'saveFile' => false,
+    'apiVersion' => '',
+    'sbVersion' => '',
+    'spVersion' => '',
+    'sdVersion' => '',
+    'portfoliosVersion' => '',
+    'reportsVersion' => '',
+    'appUserAgent' => '',
+    'deleteGzipFile' => false,
+    'isUseProxy' => false,
+    'guzzleProxy' => '',
+    'curlProxyType' => 'socks5',
+    'curlProxy' => '',
+    'headerAccept' => ''
   );
 
 $client = new Client($config);
