@@ -189,7 +189,7 @@ trait SponsoredProductsRequests
      */
     public function listTargetingClauses(array $data): array
     {
-        return $this->operation("sp/targets/list", $data, 'POST');
+        return $this->operation('sp/targets/list', $data, 'POST');
     }
 
 
@@ -200,7 +200,7 @@ trait SponsoredProductsRequests
      */
     public function createTargetingClauses(array $data): array
     {
-        return $this->operation("sp/targets", $data, 'POST');
+        return $this->operation('sp/targets', $data, 'POST');
     }
 
     /**
@@ -210,7 +210,7 @@ trait SponsoredProductsRequests
      */
     public function updateTargetingClauses(array $data): array
     {
-        return $this->operation("sp/targets", $data, 'PUT');
+        return $this->operation('sp/targets', $data, 'PUT');
     }
 
     /**
@@ -710,28 +710,6 @@ trait SponsoredProductsRequests
     }
 
     /**
-     * GET /v2/stores
-     * @param array $data
-     * @return array
-     * @throws Exception
-     */
-    public function getStores(array $data): array
-    {
-        return $this->operation("v2/stores", $data);
-    }
-
-    /**
-     * GET /v2/stores/{$brandEntityId}
-     * @param string $brandEntityId
-     * @return array
-     * @throws Exception
-     */
-    public function getStoresByBrandEntityId(string $brandEntityId): array
-    {
-        return $this->operation("v2/stores/$brandEntityId");
-    }
-
-    /**
      * @param $recordType
      * @param array $data
      * @return array
@@ -750,52 +728,41 @@ trait SponsoredProductsRequests
     public function getSnapshot($snapshotId): array
     {
         $req = $this->operation("snapshots/$snapshotId");
-        if ($req["success"]) {
-            $json = json_decode($req["response"], true);
-            if ($json["status"] == "SUCCESS") {
-                return $this->download($json["location"]);
+        if ($req['success']) {
+            $json = json_decode($req['response'], true);
+            if ($json['status'] == 'SUCCESS') {
+                return $this->download($json['location']);
             }
         }
         return $req;
     }
 
     /**
-     * @param $recordType
-     * @param array $data
+     * POST https://advertising-api.amazon.com/v2/sp/targets/productRecommendations
+     * @see https://advertising.amazon.com/API/docs/v2/reference/product_attribute_targeting#createTargetRecommendations
+     *
+     * @param array $data [pageSize => int(1-50), pageNumber => int, asins: string[]]
      * @return array
      * @throws Exception
      */
-    public function requestReport($recordType, array $data): array
+    public function generateTargetsProductRecommendations(array $data): array
     {
-        $type = $this->getCampaignTypeForReportRequest($data);
-        if ($this->reportsVersion == 'v3') {
-            $type = null;
-        } else {
-            if ($data['reportType'] != Client::CAMPAIGN_TYPE_SPONSORED_DISPLAY) {
-                $type = $this->reportsVersion . '/' . $type . "/";
-            } else {
-                $type = $type . "/";
-            }
-
-            if (isset($data['reportType'])) {
-                unset($data['reportType']);
-            }
-        }
-        if (!$type && $this->reportsVersion == 'v2') {
-            $this->logAndThrow("Unable to perform request. No type is set");
-        }
-        return $this->operation($type . "$recordType/report", $data, 'POST');
+        return $this->operation('sp/targets/productRecommendations', $data, 'POST');
     }
 
     /**
+     * GET https://advertising-api.amazon.com/v2/sp/targets/brands
+     * @see https://advertising.amazon.com/API/docs/v2/reference/product_attribute_targeting#getBrandRecommendations
+     *
      * @param array $data
      * @return array
      * @throws Exception
      */
-    public function requestOfflineReport(array $data): array
+    public function getBrandRecommendations(array $data): array
     {
-        return $this->operation("reporting/reports", $data, 'POST');
+        return $this->operation('sp/targets/brands', $data);
     }
+
 
     /**
      * @param array|null $data
@@ -816,166 +783,5 @@ trait SponsoredProductsRequests
         } else {
             throw new Exception("Invalid reportType $reportType");
         }
-    }
-
-    /**
-     * @param $reportId
-     * @return array
-     * @throws Exception
-     */
-    public function getReport($reportId): array
-    {
-        if ($this->reportsVersion != $this->apiVersion) {
-            $type = $this->reportsVersion . "/";
-        } else {
-            $type = '/';
-        }
-
-        $req = $this->operation($type . "reports/$reportId");
-        if ($req["success"]) {
-            $json = json_decode($req["response"], true);
-            if ($json["status"] == "SUCCESS") {
-                return $this->download($json["location"]);
-            }
-        }
-        return $req;
-    }
-
-    /**
-     * @param $reportId
-     * @return array
-     * @throws Exception
-     */
-    public function getOfflineReport($reportId): array
-    {
-        $req = $this->operation("reporting/reports/$reportId");
-        if ($req["success"]) {
-            $json = json_decode($req["response"], true);
-            if ($json["status"] == "COMPLETED") {
-                return $this->download($json["url"], true);
-            }
-        }
-        return $req;
-    }
-
-    //portfolios part
-
-    /**
-     * @param array $data
-     * @return array
-     * @throws Exception
-     */
-    public function listPortfolios(array $data): array
-    {
-        if ($this->portfoliosVersion == 'v3') {
-            $type = null;
-        } else {
-            $type = $this->portfoliosVersion . "/";
-        }
-        return $this->operation($type . "portfolios", $data);
-    }
-
-    /**
-     * @param array $data
-     * @return array
-     * @throws Exception
-     */
-    public function listPortfoliosEx(array $data): array
-    {
-        if ($this->portfoliosVersion == 'v3') {
-            $type = null;
-        } else {
-            $type = $this->portfoliosVersion . "/";
-        }
-        return $this->operation($type . "portfolios/extended", $data);
-    }
-
-    /**
-     * @param int $portfolioId
-     * @return array
-     * @throws Exception
-     */
-    public function getPortfolio(int $portfolioId): array
-    {
-        if ($this->portfoliosVersion == 'v3') {
-            $type = null;
-        } else {
-            $type = $this->portfoliosVersion . "/";
-        }
-        return $this->operation($type . 'portfolios/' . $portfolioId);
-    }
-
-    /**
-     * @param int $portfolioId
-     * @return array
-     * @throws Exception
-     */
-    public function getPortfolioEx(int $portfolioId): array
-    {
-        if ($this->portfoliosVersion == 'v3') {
-            $type = null;
-        } else {
-            $type = $this->portfoliosVersion . "/";
-        }
-        return $this->operation($type . 'portfolios/extended/' . $portfolioId);
-    }
-
-    /**
-     * @param array $data
-     * @return array
-     * @throws Exception
-     */
-    public function createPortfolios(array $data): array
-    {
-        if ($this->portfoliosVersion == 'v3') {
-            $type = null;
-        } else {
-            $type = $this->portfoliosVersion . "/";
-        }
-        return $this->operation($type . 'portfolios', $data, 'POST');
-    }
-
-    /**
-     * @param array $data
-     * @return array
-     * @throws Exception
-     */
-    public function updatePortfolios(array $data): array
-    {
-        if ($this->portfoliosVersion == 'v3') {
-            $type = null;
-        } else {
-            $type = $this->portfoliosVersion . "/";
-        }
-        return $this->operation($type . 'portfolios', $data, 'PUT');
-    }
-
-    //start of Product Attribute Targeting
-
-    /**
-     * POST https://advertising-api.amazon.com/v2/sp/targets/productRecommendations
-     * @see https://advertising.amazon.com/API/docs/v2/reference/product_attribute_targeting#createTargetRecommendations
-     *
-     * @param array $data [pageSize => int(1-50), pageNumber => int, asins: string[]]
-     * @return array
-     * @throws Exception
-     */
-    public function generateTargetsProductRecommendations(array $data): array
-    {
-        return $this->operation("sp/targets/productRecommendations", $data, 'POST');
-    }
-
-
-    /**
-     * GET https://advertising-api.amazon.com/v2/sp/targets/brands
-     * @see https://advertising.amazon.com/API/docs/v2/reference/product_attribute_targeting#getBrandRecommendations
-     *
-     * @param array $data
-     * @return array
-     * @throws Exception
-     */
-    public function getBrandRecommendations(array $data): array
-    {
-        return $this->operation("sp/targets/brands", $data);
     }
 }
