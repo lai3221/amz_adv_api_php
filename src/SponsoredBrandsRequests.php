@@ -500,17 +500,6 @@ trait SponsoredBrandsRequests
     }
 
     /**
-     * @see https://advertising.amazon.com/API/docs/en-us/sponsored-brands/3-0/openapi/prod#/Campaigns
-     * @param null $data
-     * @return array
-     * @throws Exception
-     */
-    public function listSponsoredBrandCampaignsBeta($data = null): array
-    {
-        return $this->operation("sb/beta/campaigns/list", $data,'POST');
-    }
-
-    /**
      * @see https://advertising.amazon.com/API/docs/en-us/sponsored-brands/3-0/openapi#/Campaigns/createCampaigns
      * @param array $data
      * @return array
