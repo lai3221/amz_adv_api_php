@@ -57,6 +57,7 @@ class Client
     private $portfoliosVersion;
     private $reportsVersion;
     private $applicationVersion;
+    public $campaignTypePrefix;
     private $userAgent;
     private $isUseProxy = false;
     private $endpoint = null;
@@ -85,15 +86,15 @@ class Client
         $this->spVersion = $config['spVersion'] ?? '';
         $this->portfoliosVersion = $config['portfoliosVersion'] ?? '';
         $this->reportsVersion = $config['reportsVersion'] ?? '';
-        $this->apiVersion = is_null($this->apiVersion) ? $this->versionStrings["apiVersion"] : $this->apiVersion;
-        $this->applicationVersion = $this->versionStrings["applicationVersion"];
+        $this->apiVersion = is_null($this->apiVersion) ? $this->versionStrings['apiVersion'] : $this->apiVersion;
+        $this->applicationVersion = $this->versionStrings['applicationVersion'];
         $this->userAgent = $config['appUserAgent'];
         $this->headerAccept = $config['headerAccept'] ?? '';
         $this->validateConfig($config);
         $this->validateConfigParameters();
         $this->setEndpoints();
 
-        if (is_null($this->config["accessToken"]) && !is_null($this->config["refreshToken"])) {
+        if (is_null($this->config['accessToken']) && !is_null($this->config['refreshToken'])) {
             $this->doRefreshToken();
         }
     }
@@ -120,7 +121,7 @@ class Client
             "User-Agent: $this->userAgent"
         );
 
-        $refresh_token = rawurldecode($this->config["refreshToken"]);
+        $refresh_token = rawurldecode($this->config['refreshToken']);
 
         $params = array(
             'grant_type' => 'refresh_token',
@@ -145,9 +146,9 @@ class Client
 
         $response = $this->executeRequest($request);
 
-        $response_array = json_decode($response["response"], true);
+        $response_array = json_decode($response['response'], true);
         if (is_array($response_array) && array_key_exists("access_token", $response_array)) {
-            $this->config["accessToken"] = $response_array["access_token"];
+            $this->config['accessToken'] = $response_array['access_token'];
         } else {
             $this->logAndThrow("Unable to refresh token. 'access_token' not found in response. " . print_r($response,
                     true));
@@ -170,7 +171,7 @@ class Client
         }
         if ($gunzip) {
             $response = $this->executeRequest($request);
-            $response["response"] = gzdecode($response["response"]);
+            $response['response'] = gzdecode($response['response']);
             return $response;
         }
         return $this->executeRequest($request);
@@ -194,7 +195,7 @@ class Client
             $extractedFile = $this->extractFile($filePath);
             fclose($tmpFile);
             $response['response_type'] = 'file';
-            $response["response"] = $extractedFile;
+            $response['response'] = $extractedFile;
         } else {
             fclose($tmpFile);
             unlink($filePath);
@@ -252,18 +253,18 @@ class Client
         $url = "$this->endpoint/$interface";
         $this->requestId = null;
         switch (strtolower($method)) {
-            case "get":
+            case 'get':
                 if (!empty($params)) {
-                    $url .= "?";
+                    $url .= '?';
                     foreach ($params as $k => $v) {
-                        $url .= "$k=" . rawurlencode($v) . "&";
+                        $url .= "$k=" . rawurlencode($v) . '&';
                     }
-                    $url = rtrim($url, "&");
+                    $url = rtrim($url, '&');
                 }
                 break;
-            case "put":
-            case "post":
-            case "delete":
+            case 'put':
+            case 'post':
+            case 'delete':
                 if (!empty($params)) {
                     $data = json_encode($params);
                     $request->setOption(CURLOPT_POST, true);
@@ -290,33 +291,33 @@ class Client
         $this->requestId = $request->requestId;
         $response_info = $request->getInfo();
         $request->close();
-        if ($response_info["http_code"] == 307) {
+        if ($response_info['http_code'] == 307) {
             /* application/octet-stream */
-            return $this->download($response_info["redirect_url"], true);
+            return $this->download($response_info['redirect_url'], true);
         }
 
-        if (!preg_match("/^(2|3)\d{2}$/", $response_info["http_code"])) {
+        if (!preg_match("/^(2|3)\d{2}$/", $response_info['http_code'])) {
             $requestId = 0;
             $json = json_decode($response, true);
             if (!is_null($json)) {
-                if (array_key_exists("requestId", $json)) {
-                    $requestId = json_decode($response, true)["requestId"];
+                if (array_key_exists('requestId', $json)) {
+                    $requestId = json_decode($response, true)['requestId'];
                 }
             }
             return array(
-                "success" => false,
-                "code" => $response_info["http_code"],
-                "response" => is_array($response) ? $response : $json,
+                'success' => false,
+                'code' => $response_info['http_code'],
+                'response' => is_array($response) ? $response : $json,
                 'responseInfo' => $response_info,
-                "requestId" => $requestId
+                'requestId' => $requestId
             );
         } else {
             return array(
-                "success" => true,
-                "code" => $response_info["http_code"],
+                'success' => true,
+                'code' => $response_info['http_code'],
                 'responseInfo' => $response_info,
-                "response" => $response,
-                "requestId" => $this->requestId
+                'response' => $response,
+                'requestId' => $this->requestId
             );
         }
     }
@@ -349,42 +350,42 @@ class Client
     private function validateConfigParameters(): bool
     {
         foreach ($this->config as $k => $v) {
-            if (is_null($v) && $k !== "accessToken" && $k !== "refreshToken") {
+            if (is_null($v) && $k !== 'accessToken' && $k !== 'refreshToken') {
                 $this->logAndThrow("Missing required parameter $k.");
             }
             switch ($k) {
-                case "clientId":
+                case 'clientId':
                     if (!preg_match("/^amzn1\.application-oa2-client\.[a-z0-9]{32}$/i", $v)) {
-                        $this->logAndThrow("Invalid parameter value for clientId.");
+                        $this->logAndThrow('Invalid parameter value for clientId.');
                     }
                     break;
-                case "clientSecret":
+                case 'clientSecret':
                     if (!preg_match("/^[a-z0-9]{64}$/i", $v)) {
-                        $this->logAndThrow("Invalid parameter value for clientSecret.");
+                        $this->logAndThrow('Invalid parameter value for clientSecret.');
                     }
                     break;
-                case "accessToken":
+                case 'accessToken':
                     if (!is_null($v)) {
                         if (!preg_match("/^Atza(\||%7C|%7c).*$/", $v)) {
-                            $this->logAndThrow("Invalid parameter value for accessToken.");
+                            $this->logAndThrow('Invalid parameter value for accessToken.');
                         }
                     }
                     break;
-                case "refreshToken":
+                case 'refreshToken':
                     if (!is_null($v)) {
                         if (!preg_match("/^Atzr(\||%7C|%7c).*$/", $v)) {
-                            $this->logAndThrow("Invalid parameter value for refreshToken.");
+                            $this->logAndThrow('Invalid parameter value for refreshToken.');
                         }
                     }
                     break;
-                case "sandbox":
+                case 'sandbox':
                     if (!is_bool($v)) {
-                        $this->logAndThrow("Invalid parameter value for sandbox.");
+                        $this->logAndThrow('Invalid parameter value for sandbox.');
                     }
                     break;
-                case "saveFile":
+                case 'saveFile':
                     if (!is_bool($v)) {
-                        $this->logAndThrow("Invalid parameter value for saveFile.");
+                        $this->logAndThrow('Invalid parameter value for saveFile.');
                     }
                     break;
             }
@@ -399,16 +400,16 @@ class Client
     private function setEndpoints(): bool
     {
         /* check if region exists and set api/token endpoints */
-        if (array_key_exists(strtolower($this->config["region"]), $this->endpoints)) {
-            $region_code = strtolower($this->config["region"]);
-            if ($this->config["sandbox"]) {
-                $this->endpoint = "https://{$this->endpoints[$region_code]["sandbox"]}/";
+        if (array_key_exists(strtolower($this->config['region']), $this->endpoints)) {
+            $region_code = strtolower($this->config['region']);
+            if ($this->config['sandbox']) {
+                $this->endpoint = "https://{$this->endpoints[$region_code]['sandbox']}/";
             } else {
-                $this->endpoint = "https://{$this->endpoints[$region_code]["prod"]}/";
+                $this->endpoint = "https://{$this->endpoints[$region_code]['prod']}/";
             }
-            $this->tokenUrl = $this->endpoints[$region_code]["tokenUrl"];
+            $this->tokenUrl = $this->endpoints[$region_code]['tokenUrl'];
         } else {
-            $this->logAndThrow("Invalid region.");
+            $this->logAndThrow('Invalid region.');
         }
         return true;
     }
@@ -421,5 +422,4 @@ class Client
     {
         throw new Exception($message);
     }
-
 }

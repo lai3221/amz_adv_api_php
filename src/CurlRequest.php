@@ -8,7 +8,7 @@ namespace AmazonAdvertisingApi;
  */
 class CurlRequest
 {
-    private $handle = null;
+    private $handle;
     public $requestId = null;
 
     public function __construct($config)
@@ -74,7 +74,7 @@ class CurlRequest
         return curl_getinfo($this->handle);
     }
 
-    public function getError()
+    public function getError(): string
     {
         return curl_error($this->handle);
     }
@@ -84,7 +84,7 @@ class CurlRequest
         curl_close($this->handle);
     }
 
-    private function handleHeaderLine($ch, $line)
+    private function handleHeaderLine($ch, $line): int
     {
         $matches = array();
         if (preg_match("/x-amz-request-id:\ \S+/", $line)) {
