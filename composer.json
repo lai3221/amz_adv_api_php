@@ -1,7 +1,7 @@
 {
     "name": "lai3221/amzn_adv_api_php",
     "type": "library",
-    "description": "Amazon Advertising API Client Library",
+    "description": "Amazon Advertising API Client Library V3.0",
     "keywords": [
         "amazon",
         "advertising",
