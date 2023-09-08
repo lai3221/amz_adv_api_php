@@ -87,7 +87,7 @@ class CurlRequest
     private function handleHeaderLine($ch, $line): int
     {
         $matches = array();
-        if (preg_match("/x-amz-request-id:\ \S+/", $line)) {
+        if (preg_match("/x-amzn-RequestId:\ \S+/", $line)) {
             preg_match_all("/[^\ ]\S+/", $line, $matches);
             if (count($matches) > 0) {
                 if (count($matches[0]) > 1) {

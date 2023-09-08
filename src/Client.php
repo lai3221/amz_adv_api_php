@@ -231,7 +231,12 @@ class Client
      * @return array
      * @throws Exception
      */
-    private function operation(string $interface, ?array $params = [], string $method = "GET", bool $needAccept = true): array
+    private function operation(
+        string $interface,
+        ?array $params = [],
+        string $method = "GET",
+        bool   $needAccept = true
+    ): array
     {
         $headers = array(
             'Authorization: bearer ' . $this->config['accessToken'],
