@@ -24,7 +24,7 @@
             "AmazonAdvertisingApi\\": "src/"
         }
     },
-    "version": "3.0.2",
+    "version": "3.0.3",
     "require": {
         "ext-curl": "*",
         "ext-json": "*",
