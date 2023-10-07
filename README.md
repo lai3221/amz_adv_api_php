@@ -1,5 +1,5 @@
 <p align="center">
-    <a href="https://highsidelabs.co" target="_blank">
+    <a href="https://packagist.org/packages/lai3221/amzn_adv_api_php" target="_blank">
         <img alt="logo" src="https://raw.githubusercontent.com/lai3221/.github/main/amz_adv_logo.png?raw=true" width="125">
     </a>
 </p>
