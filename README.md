@@ -1,19 +1,38 @@
+<p align="center">
+    <a href="https://highsidelabs.co" target="_blank">
+        <img alt="logo" src="https://raw.githubusercontent.com/lai3221/.github/main/amz_adv_logo.png?raw=true" width="125">
+    </a>
+</p>
+
+<p align="center">
+    <a href="https://packagist.org/packages/lai3221/amzn_adv_api_php"><img alt="Total downloads" src="https://img.shields.io/packagist/dt/lai3221/amzn_adv_api_php.svg?style=flat-square"></a>
+    <a href="https://packagist.org/packages/lai3221/amzn_adv_api_php"><img alt="Latest stable version" src="https://img.shields.io/packagist/v/lai3221/amzn_adv_api_php.svg?style=flat-square"></a>
+    <a href="https://packagist.org/packages/lai3221/amzn_adv_api_php"><img alt="License" src="https://img.shields.io/packagist/l/lai3221/amzn_adv_api_php.svg?style=flat-square"></a>
+</p>
 ## Synopsis
 
 Official Amazon Advertising API PHP client library.
 
 Version 3.0 OAS 3.0.1
 
+Resources included:
+Sponsored Products V3 (Reporting V3)<br/>
+Sponsored Brands V4 (Reporting V2)<br/>
+Sponsored Display (Reporting V2)<br/>
+Accounts<br/>
+Reporting<br/>
+Stores<br/>
+Assets<br/>
+
 ## Requirements
 
-PHP >= 7.3.0<br/>
+PHP >= 7.3<br/>
 cURL >= 7.18
 
 ## Documentation
 
 [API Reference](https://advertising.amazon.com/API/docs/en-us/reference/api-overview)<br/>
-[Access Request](https://advertising.amazon.com/API)<br/>
-[Getting Started](https://advertising.amazon.com/API/docs/en-us)
+[Getting Started](https://advertising.amazon.com/API/docs/en-us/guides/get-started/overview)
 
 ## Tutorials
 [Register Sandbox Profile](https://git.io/vPKMl) - This tutorial will show you how to register a profile in sandbox using CURL.<br/>
@@ -102,8 +121,7 @@ $client->profileId = "1234567890";
     * [getProfile](#getprofile)
     * [updateProfiles](#updateprofiles)
 * Campaigns
-    * [listCampaigns](#listcampaigns)
-    * [getCampaign](#getcampaign)
+    * [listSponsoredProductsCampaigns](#listCampaigns(SponsoredProducts))
     * [createCampaigns](#createcampaigns)
     * [updateCampaigns](#updatecampaigns)
     * [archiveCampaign](#archivecampaign)
@@ -205,88 +223,310 @@ $client->updateProfiles(
 ```
 
 ---
-#### listCampaigns
+#### listCampaigns(SponsoredProducts)
 > Retrieves a list of campaigns satisfying optional criteria.
 
 ```PHP
-$client->listCampaigns(array("stateFilter" => "enabled"));
-```
->
-```
-[
-  {
-    "campaignId": 59836775211065,
-    "name": "CampaignOne",
-    "campaignType": "sponsoredProducts",
-    "targetingType": "manual",
-    "dailyBudget": 15.0,
-    "startDate": "20160330",
-    "state": "enabled"
-  },
-  {
-    "campaignId": 254238342004647,
-    "name": "CampaignTwo",
-    "campaignType": "sponsoredProducts",
-    "targetingType": "manual",
-    "dailyBudget": 5.0,
-    "startDate": "20160510",
-    "state": "enabled"
-  }
-]
-```
-
----
-#### getCampaign
-> Retrieves a campaign by Id. Note that this call returns the minimal set of campaign fields, but is more efficient than  `getCampaignEx`.
-
-```PHP
-$client->getCampaign(1234567890);
+$client->listSponsoredProductsCampaigns(array("campaignIdFilter" => ['include' => ["ENABLED", "PAUSED"]]));
 ```
 >
 ```
 {
-  "campaignId": 1234567890,
-  "name": "CampaignOne",
-  "campaignType": "sponsoredProducts",
-  "targetingType": "manual",
-  "dailyBudget": 15.0,
-  "startDate": "20160330",
-  "state": "enabled"
+  "totalResults": 0,
+  "campaigns": [
+    {
+      "portfolioId": "string",
+      "endDate": "2019-08-24",
+      "campaignId": "string",
+      "name": "string",
+      "targetingType": "AUTO",
+      "state": "ENABLED",
+      "dynamicBidding": {
+        "placementBidding": [
+          {
+            "percentage": 900,
+            "placement": "PLACEMENT_TOP"
+          }
+        ],
+        "strategy": "LEGACY_FOR_SALES"
+      },
+      "startDate": "2019-08-24",
+      "budget": {
+        "budgetType": "DAILY",
+        "budget": 0,
+        "effectiveBudget": 0
+      },
+      "tags": {
+        "property1": "string",
+        "property2": "string"
+      },
+      "extendedData": {
+        "lastUpdateDateTime": "2019-08-24T14:15:22Z",
+        "servingStatus": "CAMPAIGN_STATUS_ENABLED",
+        "servingStatusDetails": [
+          {
+            "name": "CAMPAIGN_STATUS_ENABLED_DETAIL",
+            "helpUrl": "string",
+            "message": "string"
+          }
+        ],
+        "creationDateTime": "2019-08-24T14:15:22Z"
+      }
+    }
+  ],
+  "nextToken": "string"
 }
 ```
 
----
 #### createCampaigns
 > Creates one or more campaigns. Successfully created campaigns will be assigned unique `campaignId`s.
 
 ```PHP
-$client->createCampaigns(
-    array(
-        array("name" => "My Campaign One",
-              "campaignType" => "sponsoredProducts",
-              "targetingType" => "manual",
-              "state" => "enabled",
-              "dailyBudget" => 5.00,
-              "startDate" => date("Ymd")),
-        array("name" => "My Campaign Two",
-              "campaignType" => "sponsoredProducts",
-              "targetingType" => "manual",
-              "state" => "enabled",
-              "dailyBudget" => 15.00,
-              "startDate" => date("Ymd"))));
+$client->createSponsoredProductsCampaigns(
+   [
+    "campaigns" =>[
+        [
+            "portfolioId" =>"string",
+            "endDate" =>"2019-08-24",
+            "name" =>"string",
+            "targetingType" =>"AUTO",
+            "state" =>"ENABLED",
+            "dynamicBidding" => [
+                "placementBidding" =>[
+                    [
+                        "percentage" =>900,
+                        "placement" =>"PLACEMENT_TOP"
+                    ]
+                ],
+                "strategy" =>"LEGACY_FOR_SALES"
+            ],
+            "startDate" =>"2019-08-24",
+            "budget" => [
+                "budgetType" =>"DAILY",
+                "budget" =>0
+            ],
+            "tags" => [
+                "property1" =>"string",
+                "property2" =>"string"
+            ]
+        ]
+    ]
+]);
 ```
 >
 ```
-[
-  {
-    "code": "SUCCESS",
-    "campaignId": 173284463890123
-  },
-  {
-    "code": "SUCCESS",
-    "campaignId": 27074907785456
+{
+  "campaigns": {
+    "success": [
+      {
+        "campaignId": "string",
+        "index": 0,
+        "campaign": {
+          "portfolioId": "string",
+          "endDate": "2019-08-24",
+          "campaignId": "string",
+          "name": "string",
+          "targetingType": "AUTO",
+          "state": "ENABLED",
+          "dynamicBidding": {
+            "placementBidding": [
+              {
+                "percentage": 900,
+                "placement": "PLACEMENT_TOP"
+              }
+            ],
+            "strategy": "LEGACY_FOR_SALES"
+          },
+          "startDate": "2019-08-24",
+          "budget": {
+            "budgetType": "DAILY",
+            "budget": 0,
+            "effectiveBudget": 0
+          },
+          "tags": {
+            "property1": "string",
+            "property2": "string"
+          },
+          "extendedData": {
+            "lastUpdateDateTime": "2019-08-24T14:15:22Z",
+            "servingStatus": "CAMPAIGN_STATUS_ENABLED",
+            "servingStatusDetails": [
+              {
+                "name": "CAMPAIGN_STATUS_ENABLED_DETAIL",
+                "helpUrl": "string",
+                "message": "string"
+              }
+            ],
+            "creationDateTime": "2019-08-24T14:15:22Z"
+          }
+        }
+      }
+    ],
+    "error": [
+      {
+        "index": 0,
+        "errors": [
+          {
+            "errorType": "string",
+            "errorValue": {
+              "entityStateError": {
+                "reason": "INVALID_TARGET_STATE",
+                "marketplace": "US",
+                "entityType": "CAMPAIGN",
+                "cause": {
+                  "location": "string",
+                  "trigger": "string"
+                },
+                "message": "string"
+              },
+              "missingValueError": {
+                "reason": "MISSING_VALUE",
+                "marketplace": "US",
+                "cause": {
+                  "location": "string",
+                  "trigger": "string"
+                },
+                "message": "string"
+              },
+              "dateError": {
+                "reason": "INVALID_DATE",
+                "cause": {
+                  "location": "string",
+                  "trigger": "string"
+                },
+                "message": "string"
+              },
+              "biddingError": {
+                "reason": "BID_GT_BUDGET",
+                "marketplace": "US",
+                "cause": {
+                  "location": "string",
+                  "trigger": "string"
+                },
+                "upperLimit": "string",
+                "lowerLimit": "string",
+                "message": "string"
+              },
+              "duplicateValueError": {
+                "reason": "DUPLICATE_VALUE",
+                "marketplace": "US",
+                "cause": {
+                  "location": "string",
+                  "trigger": "string"
+                },
+                "message": "string"
+              },
+              "rangeError": {
+                "reason": "TOO_LOW",
+                "marketplace": "US",
+                "allowed": [
+                  "string"
+                ],
+                "cause": {
+                  "location": "string",
+                  "trigger": "string"
+                },
+                "upperLimit": "string",
+                "lowerLimit": "string",
+                "message": "string"
+              },
+              "parentEntityError": {
+                "reason": "PARENT_ENTITY_DOES_NOT_TARGET_THESE_MARKETPLACES",
+                "cause": {
+                  "location": "string",
+                  "trigger": "string"
+                },
+                "message": "string"
+              },
+              "otherError": {
+                "reason": "OTHER_ERROR",
+                "marketplace": "US",
+                "cause": {
+                  "location": "string",
+                  "trigger": "string"
+                },
+                "message": "string"
+              },
+              "throttledError": {
+                "reason": "THROTTLED",
+                "cause": {
+                  "location": "string",
+                  "trigger": "string"
+                },
+                "message": "string"
+              },
+              "entityNotFoundError": {
+                "reason": "ENTITY_NOT_FOUND",
+                "entityType": "CAMPAIGN",
+                "cause": {
+                  "location": "string",
+                  "trigger": "string"
+                },
+                "entityId": "string",
+                "message": "string"
+              },
+              "malformedValueError": {
+                "reason": "FORBIDDEN_CHARS",
+                "fragment": "string",
+                "marketplace": "US",
+                "cause": {
+                  "location": "string",
+                  "trigger": "string"
+                },
+                "message": "string"
+              },
+              "budgetError": {
+                "reason": "BUDGET_TOO_LOW",
+                "cause": {
+                  "location": "string",
+                  "trigger": "string"
+                },
+                "upperLimit": "string",
+                "lowerLimit": "string",
+                "message": "string"
+              },
+              "currencyError": {
+                "reason": "PREFERRED_CURRENCY_NOT_SET",
+                "cause": {
+                  "location": "string",
+                  "trigger": "string"
+                },
+                "message": "string"
+              },
+              "billingError": {
+                "reason": "ADVERTISER_SUSPENDED",
+                "cause": {
+                  "location": "string",
+                  "trigger": "string"
+                },
+                "message": "string"
+              },
+              "entityQuotaError": {
+                "reason": "QUOTA_EXCEEDED",
+                "quotaScope": "ACCOUNT",
+                "entityType": "CAMPAIGN",
+                "quota": "string",
+                "cause": {
+                  "location": "string",
+                  "trigger": "string"
+                },
+                "message": "string"
+              },
+              "internalServerError": {
+                "reason": "INTERNAL_ERROR",
+                "cause": {
+                  "location": "string",
+                  "trigger": "string"
+                },
+                "message": "string"
+              }
+            }
+          }
+        ]
+      }
+    ]
   }
-]
+}
 ```
 
 ---
@@ -294,29 +534,253 @@ $client->createCampaigns(
 > Updates one or more campaigns. Campaigns are identified using their `campaignId`s.
 
 ```PHP
-$client->updateCampaigns(
-    array(
-        array("campaignId" => 173284463890123,
-              "name" => "Update Campaign One",
-              "state" => "enabled",
-              "dailyBudget" => 10.99),
-        array("campaignId" => 27074907785456,
-              "name" => "Update Campaign Two",
-              "state" => "enabled",
-              "dailyBudget" => 99.99)));
+$client->updateSponsoredProductsCampaigns(
+  [
+    "campaigns" =>[
+        [
+            "portfolioId" =>"string",
+            "endDate" =>"2019-08-24",
+            "campaignId" =>"string",
+            "name" =>"string",
+            "targetingType" =>"AUTO",
+            "state" =>"ENABLED",
+            "dynamicBidding" => [
+                "placementBidding" =>[
+                    [
+                        "percentage" =>900,
+                        "placement" =>"PLACEMENT_TOP"
+                    ]
+                ],
+                "strategy" =>"LEGACY_FOR_SALES"
+            ],
+            "startDate" =>"2019-08-24",
+            "budget" => [
+                "budgetType" =>"DAILY",
+                "budget" =>0
+            ],
+            "tags" => [
+                "property1" =>"string",
+                "property2" =>"string"
+            ]
+        ]
+    ]
+] 
+  );
 ```
 >
 ```
-[
-  {
-    "code": "SUCCESS",
-    "campaignId": 173284463890123
-  },
-  {
-    "code": "SUCCESS",
-    "campaignId": 27074907785456
+{
+  "campaigns": {
+    "success": [
+      {
+        "campaignId": "string",
+        "index": 0,
+        "campaign": {
+          "portfolioId": "string",
+          "endDate": "2019-08-24",
+          "campaignId": "string",
+          "name": "string",
+          "targetingType": "AUTO",
+          "state": "ENABLED",
+          "dynamicBidding": {
+            "placementBidding": [
+              {
+                "percentage": 900,
+                "placement": "PLACEMENT_TOP"
+              }
+            ],
+            "strategy": "LEGACY_FOR_SALES"
+          },
+          "startDate": "2019-08-24",
+          "budget": {
+            "budgetType": "DAILY",
+            "budget": 0,
+            "effectiveBudget": 0
+          },
+          "tags": {
+            "property1": "string",
+            "property2": "string"
+          },
+          "extendedData": {
+            "lastUpdateDateTime": "2019-08-24T14:15:22Z",
+            "servingStatus": "CAMPAIGN_STATUS_ENABLED",
+            "servingStatusDetails": [
+              {
+                "name": "CAMPAIGN_STATUS_ENABLED_DETAIL",
+                "helpUrl": "string",
+                "message": "string"
+              }
+            ],
+            "creationDateTime": "2019-08-24T14:15:22Z"
+          }
+        }
+      }
+    ],
+    "error": [
+      {
+        "index": 0,
+        "errors": [
+          {
+            "errorType": "string",
+            "errorValue": {
+              "entityStateError": {
+                "reason": "INVALID_TARGET_STATE",
+                "marketplace": "US",
+                "entityType": "CAMPAIGN",
+                "cause": {
+                  "location": "string",
+                  "trigger": "string"
+                },
+                "message": "string"
+              },
+              "missingValueError": {
+                "reason": "MISSING_VALUE",
+                "marketplace": "US",
+                "cause": {
+                  "location": "string",
+                  "trigger": "string"
+                },
+                "message": "string"
+              },
+              "dateError": {
+                "reason": "INVALID_DATE",
+                "cause": {
+                  "location": "string",
+                  "trigger": "string"
+                },
+                "message": "string"
+              },
+              "biddingError": {
+                "reason": "BID_GT_BUDGET",
+                "marketplace": "US",
+                "cause": {
+                  "location": "string",
+                  "trigger": "string"
+                },
+                "upperLimit": "string",
+                "lowerLimit": "string",
+                "message": "string"
+              },
+              "duplicateValueError": {
+                "reason": "DUPLICATE_VALUE",
+                "marketplace": "US",
+                "cause": {
+                  "location": "string",
+                  "trigger": "string"
+                },
+                "message": "string"
+              },
+              "rangeError": {
+                "reason": "TOO_LOW",
+                "marketplace": "US",
+                "allowed": [
+                  "string"
+                ],
+                "cause": {
+                  "location": "string",
+                  "trigger": "string"
+                },
+                "upperLimit": "string",
+                "lowerLimit": "string",
+                "message": "string"
+              },
+              "parentEntityError": {
+                "reason": "PARENT_ENTITY_DOES_NOT_TARGET_THESE_MARKETPLACES",
+                "cause": {
+                  "location": "string",
+                  "trigger": "string"
+                },
+                "message": "string"
+              },
+              "otherError": {
+                "reason": "OTHER_ERROR",
+                "marketplace": "US",
+                "cause": {
+                  "location": "string",
+                  "trigger": "string"
+                },
+                "message": "string"
+              },
+              "throttledError": {
+                "reason": "THROTTLED",
+                "cause": {
+                  "location": "string",
+                  "trigger": "string"
+                },
+                "message": "string"
+              },
+              "entityNotFoundError": {
+                "reason": "ENTITY_NOT_FOUND",
+                "entityType": "CAMPAIGN",
+                "cause": {
+                  "location": "string",
+                  "trigger": "string"
+                },
+                "entityId": "string",
+                "message": "string"
+              },
+              "malformedValueError": {
+                "reason": "FORBIDDEN_CHARS",
+                "fragment": "string",
+                "marketplace": "US",
+                "cause": {
+                  "location": "string",
+                  "trigger": "string"
+                },
+                "message": "string"
+              },
+              "budgetError": {
+                "reason": "BUDGET_TOO_LOW",
+                "cause": {
+                  "location": "string",
+                  "trigger": "string"
+                },
+                "upperLimit": "string",
+                "lowerLimit": "string",
+                "message": "string"
+              },
+              "currencyError": {
+                "reason": "PREFERRED_CURRENCY_NOT_SET",
+                "cause": {
+                  "location": "string",
+                  "trigger": "string"
+                },
+                "message": "string"
+              },
+              "billingError": {
+                "reason": "ADVERTISER_SUSPENDED",
+                "cause": {
+                  "location": "string",
+                  "trigger": "string"
+                },
+                "message": "string"
+              },
+              "entityQuotaError": {
+                "reason": "QUOTA_EXCEEDED",
+                "quotaScope": "ACCOUNT",
+                "entityType": "CAMPAIGN",
+                "quota": "string",
+                "cause": {
+                  "location": "string",
+                  "trigger": "string"
+                },
+                "message": "string"
+              },
+              "internalServerError": {
+                "reason": "INTERNAL_ERROR",
+                "cause": {
+                  "location": "string",
+                  "trigger": "string"
+                },
+                "message": "string"
+              }
+            }
+          }
+        ]
+      }
+    ]
   }
-]
+}
 ```
 
 ---
@@ -324,13 +788,229 @@ $client->updateCampaigns(
 > Sets the campaign status to archived. This same operation can be performed via an update, but is included for completeness.
 
 ```PHP
-$client->archiveCampaign(1234567890);
+$client->deleteSponsoredProductsCampaigns(
+[
+    "campaignIdFilter" => [
+        "include" =>[
+            "string"
+        ]
+    ]
+]
+);
 ```
 >
 ```
 {
-  "code": "SUCCESS",
-  "campaignId": 1234567890
+  "campaigns": {
+    "success": [
+      {
+        "campaignId": "string",
+        "index": 0,
+        "campaign": {
+          "portfolioId": "string",
+          "endDate": "2019-08-24",
+          "campaignId": "string",
+          "name": "string",
+          "targetingType": "AUTO",
+          "state": "ENABLED",
+          "dynamicBidding": {
+            "placementBidding": [
+              {
+                "percentage": 900,
+                "placement": "PLACEMENT_TOP"
+              }
+            ],
+            "strategy": "LEGACY_FOR_SALES"
+          },
+          "startDate": "2019-08-24",
+          "budget": {
+            "budgetType": "DAILY",
+            "budget": 0,
+            "effectiveBudget": 0
+          },
+          "tags": {
+            "property1": "string",
+            "property2": "string"
+          },
+          "extendedData": {
+            "lastUpdateDateTime": "2019-08-24T14:15:22Z",
+            "servingStatus": "CAMPAIGN_STATUS_ENABLED",
+            "servingStatusDetails": [
+              {
+                "name": "CAMPAIGN_STATUS_ENABLED_DETAIL",
+                "helpUrl": "string",
+                "message": "string"
+              }
+            ],
+            "creationDateTime": "2019-08-24T14:15:22Z"
+          }
+        }
+      }
+    ],
+    "error": [
+      {
+        "index": 0,
+        "errors": [
+          {
+            "errorType": "string",
+            "errorValue": {
+              "entityStateError": {
+                "reason": "INVALID_TARGET_STATE",
+                "marketplace": "US",
+                "entityType": "CAMPAIGN",
+                "cause": {
+                  "location": "string",
+                  "trigger": "string"
+                },
+                "message": "string"
+              },
+              "missingValueError": {
+                "reason": "MISSING_VALUE",
+                "marketplace": "US",
+                "cause": {
+                  "location": "string",
+                  "trigger": "string"
+                },
+                "message": "string"
+              },
+              "dateError": {
+                "reason": "INVALID_DATE",
+                "cause": {
+                  "location": "string",
+                  "trigger": "string"
+                },
+                "message": "string"
+              },
+              "biddingError": {
+                "reason": "BID_GT_BUDGET",
+                "marketplace": "US",
+                "cause": {
+                  "location": "string",
+                  "trigger": "string"
+                },
+                "upperLimit": "string",
+                "lowerLimit": "string",
+                "message": "string"
+              },
+              "duplicateValueError": {
+                "reason": "DUPLICATE_VALUE",
+                "marketplace": "US",
+                "cause": {
+                  "location": "string",
+                  "trigger": "string"
+                },
+                "message": "string"
+              },
+              "rangeError": {
+                "reason": "TOO_LOW",
+                "marketplace": "US",
+                "allowed": [
+                  "string"
+                ],
+                "cause": {
+                  "location": "string",
+                  "trigger": "string"
+                },
+                "upperLimit": "string",
+                "lowerLimit": "string",
+                "message": "string"
+              },
+              "parentEntityError": {
+                "reason": "PARENT_ENTITY_DOES_NOT_TARGET_THESE_MARKETPLACES",
+                "cause": {
+                  "location": "string",
+                  "trigger": "string"
+                },
+                "message": "string"
+              },
+              "otherError": {
+                "reason": "OTHER_ERROR",
+                "marketplace": "US",
+                "cause": {
+                  "location": "string",
+                  "trigger": "string"
+                },
+                "message": "string"
+              },
+              "throttledError": {
+                "reason": "THROTTLED",
+                "cause": {
+                  "location": "string",
+                  "trigger": "string"
+                },
+                "message": "string"
+              },
+              "entityNotFoundError": {
+                "reason": "ENTITY_NOT_FOUND",
+                "entityType": "CAMPAIGN",
+                "cause": {
+                  "location": "string",
+                  "trigger": "string"
+                },
+                "entityId": "string",
+                "message": "string"
+              },
+              "malformedValueError": {
+                "reason": "FORBIDDEN_CHARS",
+                "fragment": "string",
+                "marketplace": "US",
+                "cause": {
+                  "location": "string",
+                  "trigger": "string"
+                },
+                "message": "string"
+              },
+              "budgetError": {
+                "reason": "BUDGET_TOO_LOW",
+                "cause": {
+                  "location": "string",
+                  "trigger": "string"
+                },
+                "upperLimit": "string",
+                "lowerLimit": "string",
+                "message": "string"
+              },
+              "currencyError": {
+                "reason": "PREFERRED_CURRENCY_NOT_SET",
+                "cause": {
+                  "location": "string",
+                  "trigger": "string"
+                },
+                "message": "string"
+              },
+              "billingError": {
+                "reason": "ADVERTISER_SUSPENDED",
+                "cause": {
+                  "location": "string",
+                  "trigger": "string"
+                },
+                "message": "string"
+              },
+              "entityQuotaError": {
+                "reason": "QUOTA_EXCEEDED",
+                "quotaScope": "ACCOUNT",
+                "entityType": "CAMPAIGN",
+                "quota": "string",
+                "cause": {
+                  "location": "string",
+                  "trigger": "string"
+                },
+                "message": "string"
+              },
+              "internalServerError": {
+                "reason": "INTERNAL_ERROR",
+                "cause": {
+                  "location": "string",
+                  "trigger": "string"
+                },
+                "message": "string"
+              }
+            }
+          }
+        ]
+      }
+    ]
+  }
 }
 ```
 
