@@ -30,23 +30,27 @@ class CurlRequest
                 case 'http':
                     $curlType = CURLPROXY_HTTP;
                     break;
-                case 'https'://Added in 7.52.0 for OpenSSL, GnuTLS and NSS
+                //Added in 7.52.0 for OpenSSL, GnuTLS and NSS
+                case 'https':
                     $curlType = CURLPROXY_HTTPS;
                     break;
-                case 'http_1_0': // This is similar to CURLPROXY_HTTP except it uses HTTP/1.0 for any CONNECT tunnelling.
-                    // It does not change the HTTP version of the actual HTTP requests, controlled by CURLOPT_HTTP_VERSION.
+                // This is similar to CURLPROXY_HTTP except it uses HTTP/1.0 for any CONNECT tunnelling.
+                // It does not change the HTTP version of the actual HTTP requests, controlled by CURLOPT_HTTP_VERSION.
+                case 'http_1_0':
                     $curlType = CURLPROXY_HTTP_1_0;
                     break;
                 case 'socks4':
                     $curlType = CURLPROXY_SOCKS4;
                     break;
-                case 'socks4a'://Proxy resolves URL hostname.
+                //Proxy resolves URL hostname.
+                case 'socks4a':
                     $curlType = CURLPROXY_SOCKS4A;
                     break;
                 case 'socks5':
                     $curlType = CURLPROXY_SOCKS5;
                     break;
-                case 'socks_hostname'://Proxy resolves URL hostname.
+                //Proxy resolves URL hostname.
+                case 'socks_hostname':
                     $curlType = CURLPROXY_SOCKS5_HOSTNAME;
                     break;
             }

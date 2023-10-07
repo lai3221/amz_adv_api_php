@@ -230,7 +230,7 @@ trait SponsoredDisplayRequests
     }
 
     /**
-     * Sets the status of a product ad to archived.
+     * Sets the status of a product ad to archive.
      * @see https://advertising.amazon.com/API/docs/en-us/sponsored-display/3-0/openapi#/Product%20ads/archiveProductAd
      * @param int $adId
      * @param array|null $data

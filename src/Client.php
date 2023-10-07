@@ -18,7 +18,9 @@ class Client
     use SponsoredBrandsRequests;
     use SponsoredDisplayRequests;
     use ProductEligibilityRequests;
-    use AccountRequests;
+    use AccountsRequests;
+    use StoresRequests;
+    use AssetsRequests;
     use ReportingRequests;
 
     public const CAMPAIGN_TYPE_SPONSORED_PRODUCTS_FULL = 'sponsoredProducts';
@@ -158,72 +160,6 @@ class Client
     }
 
     /**
-     * @param $location
-     * @param bool $gunzip
-     * @return array
-     */
-    public function download($location, bool $gunzip = false): array
-    {
-        $request = new CurlRequest($this->config);
-        $request->setOption(CURLOPT_URL, $location);
-        if ($this->config['saveFile'] && $gunzip) {
-            return $this->saveDownloaded($request);
-        }
-        if ($gunzip) {
-            $response = $this->executeRequest($request);
-            $response['response'] = gzdecode($response['response']);
-            return $response;
-        }
-        return $this->executeRequest($request);
-    }
-
-    /**
-     * Save *.json.gz file, extract it, remove .gz file
-     * and set into response path to json file
-     * @param CurlRequest $request
-     * @return array
-     */
-    protected function saveDownloaded(CurlRequest $request): array
-    {
-        $filePath = uniqid(microtime(true) . '_amzn_ads_') . '.json.gz';
-        $tmpFile = fopen($filePath, 'w+');
-        $request->setOption(CURLOPT_HEADER, 0);
-        $request->setOption(CURLOPT_FOLLOWLOCATION, 1);
-        $request->setOption(CURLOPT_FILE, $tmpFile);
-        $response = $this->executeRequest($request);
-        if ($response['success']) {
-            $extractedFile = $this->extractFile($filePath);
-            fclose($tmpFile);
-            $response['response_type'] = 'file';
-            $response['response'] = $extractedFile;
-        } else {
-            fclose($tmpFile);
-            unlink($filePath);
-        }
-        return $response;
-    }
-
-    /**
-     * @param string $filePath
-     * @return string
-     */
-    protected function extractFile(string $filePath): string
-    {
-        $bufferSize = 4096; // read 4kb at a time
-        $unzipFilePath = str_replace('.gz', '', $filePath);
-        $file = gzopen($filePath, 'rb');
-        $unzippedFile = fopen($unzipFilePath, 'wb');
-
-        while (!gzeof($file)) {
-            fwrite($unzippedFile, gzread($file, $bufferSize));
-        }
-        fclose($unzippedFile);
-        gzclose($file);
-
-        return $unzipFilePath;
-    }
-
-    /**
      * @param string $interface
      * @param array|null $params
      * @param string $method
@@ -301,20 +237,14 @@ class Client
             return $this->download($response_info['redirect_url'], true);
         }
 
-        if (!preg_match("/^(2|3)\d{2}$/", $response_info['http_code'])) {
-            $requestId = 0;
+        if (!preg_match('/^(2|3)\d{2}$/', $response_info['http_code'])) {
             $json = json_decode($response, true);
-            if (!is_null($json)) {
-                if (array_key_exists('requestId', $json)) {
-                    $requestId = json_decode($response, true)['requestId'];
-                }
-            }
             return array(
                 'success' => false,
                 'code' => $response_info['http_code'],
                 'response' => is_array($response) ? $response : $json,
                 'responseInfo' => $response_info,
-                'requestId' => $requestId
+                'requestId' => $this->requestId
             );
         } else {
             return array(
