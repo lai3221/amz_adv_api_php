@@ -13,13 +13,12 @@ trait StoresRequests
     /**
      * Retrieves a list of stores for a given advertiser.
      * @see https://advertising.amazon.com/API/docs/en-us/reference/2/stores
-     * @param array $data
      * @return array
      * @throws Exception
      */
-    public function getStores(array $data): array
+    public function getStores(): array
     {
-        return $this->operation('v2/stores', $data);
+        return $this->operation('v2/stores');
     }
 
     /**

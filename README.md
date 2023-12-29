@@ -9,6 +9,7 @@
     <a href="https://packagist.org/packages/lai3221/amzn_adv_api_php"><img alt="Latest stable version" src="https://img.shields.io/packagist/v/lai3221/amzn_adv_api_php.svg?style=flat-square"></a>
     <a href="https://packagist.org/packages/lai3221/amzn_adv_api_php"><img alt="License" src="https://img.shields.io/packagist/l/lai3221/amzn_adv_api_php.svg?style=flat-square"></a>
 </p>
+
 ## Synopsis
 
 Official Amazon Advertising API PHP client library.
@@ -23,6 +24,11 @@ Accounts<br/>
 Reporting<br/>
 Stores<br/>
 Assets<br/>
+Audiences discovery (new)<br/>
+Change history V1 (new)<br/>
+Posts V2 (new)<br/>
+Exports (new)<br/>
+Products (new)<br/>
 
 ## Requirements
 

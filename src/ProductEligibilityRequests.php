@@ -28,4 +28,16 @@ trait ProductEligibilityRequests
     {
         return $this->operation('eligibility/product/list', $data, 'POST');
     }
+
+    /**
+     * Checks the advertiser's eligibility to Ad programs.
+     * @see https://advertising.amazon.com/API/docs/en-us/eligibility-prod-3p#tag/Program-Eligibility/operation/ProgramEligibility
+     * @param array $data
+     * @return array
+     * @throws Exception
+     */
+    public function programEligibility(array $data): array
+    {
+        return $this->operation('eligibility/programs', $data, 'POST');
+    }
 }

@@ -17,11 +17,15 @@ class Client
     use SponsoredProductsRequests;
     use SponsoredBrandsRequests;
     use SponsoredDisplayRequests;
-    use ProductEligibilityRequests;
+    use ProductsRequests;
     use AccountsRequests;
     use StoresRequests;
     use AssetsRequests;
     use ReportingRequests;
+    use AudiencesRequests;
+    use HistoryRequests;
+    use PostsRequests;
+    use ExportsRequests;
 
     public const CAMPAIGN_TYPE_SPONSORED_PRODUCTS_FULL = 'sponsoredProducts';
     public const CAMPAIGN_TYPE_SPONSORED_BRANDS_FULL = 'sponsoredBrands';
