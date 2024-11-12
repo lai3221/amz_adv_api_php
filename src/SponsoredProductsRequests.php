@@ -829,6 +829,18 @@ trait SponsoredProductsRequests
         return $this->operation('sp/targets/brands', $data);
     }
 
+    /**
+     * POST getKeywordGroupRecommendations
+     * @see https://advertising.amazon.com/API/docs/en-us/sponsored-products/3-0/openapi/prod#tag/Keyword-Group-Targeting-Recommendations/operation/getKeywordGroupRecommendations
+     * @param array $data
+     * @return array
+     * @throws Exception
+     */
+    public function getKeywordGroupRecommendations(array $data): array
+    {
+        return $this->operation('sp/targeting/recommendations/keywordGroups', $data, 'POST');
+    }
+
     ## Version 2 following,Version 3 above. ##
 
     /**
