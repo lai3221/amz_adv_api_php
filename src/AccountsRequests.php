@@ -12,74 +12,38 @@ trait AccountsRequests
 {
     /**
      * Gets a list of portfolios.
-     * @see https://advertising.amazon.com/API/docs/en-us/reference/2/portfolios#tag/Portfolios/operation/listPortfolios
+     * @see https://advertising.amazon.com/API/docs/en-us/reference/portfolios#tag/Portfolios/operation/ListPortfolios
      * @param array $data
      * @return array
      * @throws Exception
      */
     public function listPortfolios(array $data): array
     {
-        return $this->operation('v2/portfolios', $data);
-    }
-
-    /**
-     * Retrieves a list of portfolios, optionally filtered by identifier, name, or state.
-     * https://advertising.amazon.com/API/docs/en-us/reference/2/portfolios#tag/Portfolios/operation/listPortfolio
-     * @param int $portfolioId
-     * @return array
-     * @throws Exception
-     */
-    public function getPortfolio(int $portfolioId): array
-    {
-        return $this->operation("v2/portfolios/$portfolioId");
-    }
-
-    /**
-     * Gets a list of portfolios with an extended set of properties.
-     * @see https://advertising.amazon.com/API/docs/en-us/reference/2/portfolios#tag/Portfolios-extended/operation/listPortfoliosEx
-     * @param array $data
-     * @return array
-     * @throws Exception
-     */
-    public function listPortfoliosEx(array $data): array
-    {
-        return $this->operation('v2/portfolios/extended', $data);
-    }
-
-    /**
-     * Gets an extended set of properties for a portfolio specified by identifier.
-     * @see https://advertising.amazon.com/API/docs/en-us/reference/2/portfolios#tag/Portfolios-extended/operation/listPortfoliosEx
-     * @param int $portfolioId
-     * @return array
-     * @throws Exception
-     */
-    public function getPortfolioEx(int $portfolioId): array
-    {
-        return $this->operation("v2/portfolios/extended/$portfolioId");
+        return $this->operation('portfolios/list', $data, 'POST');
     }
 
     /**
      * Creates one or more portfolios.
-     * @see https://advertising.amazon.com/API/docs/en-us/reference/2/portfolios#tag/Portfolios/operation/createPortfolios
+     * @see https://advertising.amazon.com/API/docs/en-us/reference/portfolios#tag/Portfolios/operation/CreatePortfolios
      * @param array $data
      * @return array
      * @throws Exception
      */
     public function createPortfolios(array $data): array
     {
-        return $this->operation('v2/portfolios', $data, 'POST');
+        return $this->operation('portfolios', $data, 'POST');
     }
 
     /**
      * Updates one or more portfolios.
-     * @see https://advertising.amazon.com/API/docs/en-us/reference/2/portfolios#tag/Portfolios/operation/updatePortfolios
+     * @see https://advertising.amazon.com/API/docs/en-us/reference/portfolios#tag/Portfolios/operation/UpdatePortfolios
      * @param array $data
      * @return array
      * @throws Exception
      */
     public function updatePortfolios(array $data): array
     {
-        return $this->operation('v2/portfolios', $data, 'PUT');
+        return $this->operation('portfolios', $data, 'PUT');
     }
 
     /**
