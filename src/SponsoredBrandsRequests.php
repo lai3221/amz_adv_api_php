@@ -949,4 +949,18 @@ trait SponsoredBrandsRequests
     {
         return $this->operation('brands', $data);
     }
+    
+    // Below functions are for Sponsored Brands V4
+
+    /**
+     * ListAds
+     * @see https://advertising.amazon.com/API/docs/en-us/sponsored-brands/3-0/openapi/prod#tag/Ads/operation/ListSponsoredBrandsAds
+     * @param array|null $data
+     * @return array
+     * @throws Exception
+     */
+    public function listAds(?array  $data): array
+    {
+        return $this->operation('sb/v4/ads/list', $data, 'POST');
+    }
 }
