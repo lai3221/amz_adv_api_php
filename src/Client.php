@@ -26,6 +26,7 @@ class Client
     use HistoryRequests;
     use PostsRequests;
     use ExportsRequests;
+    use AmazonMarketingStreamRequests;
 
     public const CAMPAIGN_TYPE_SPONSORED_PRODUCTS_FULL = 'sponsoredProducts';
     public const CAMPAIGN_TYPE_SPONSORED_BRANDS_FULL = 'sponsoredBrands';
@@ -175,7 +176,8 @@ class Client
         string $interface,
         ?array $params = [],
         string $method = "GET",
-        bool   $needAccept = true
+        bool   $needAccept = true,
+        array  $additionalHeaders = []
     ): array
     {
         $headers = array(
@@ -186,12 +188,21 @@ class Client
         if (!is_null($this->profileId)) {
             $headers[] = 'Amazon-Advertising-API-Scope: ' . $this->profileId;
         }
+        $additionalHeaderNames = array_map(function ($header) {
+            return strtolower(trim(strtok($header, ':')));
+        }, $additionalHeaders);
+        $hasAdditionalAccept = in_array('accept', $additionalHeaderNames, true);
+        $hasAdditionalContentType = in_array('content-type', $additionalHeaderNames, true);
+
         if ($this->headerAccept) {
-            if ($needAccept) {
+            if ($needAccept && !$hasAdditionalAccept) {
                 $headers[] = 'Accept: ' . $this->headerAccept;
             }
-            $headers[] = 'Content-Type: ' . $this->headerAccept;
+            if (!$hasAdditionalContentType) {
+                $headers[] = 'Content-Type: ' . $this->headerAccept;
+            }
         }
+        $headers = array_merge($headers, $additionalHeaders);
         $this->headers = $headers;
         $request = new CurlRequest($this->config);
         $this->endpoint = trim($this->endpoint, "/");
