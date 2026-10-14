@@ -27,6 +27,7 @@ class Client
     use PostsRequests;
     use ExportsRequests;
     use AmazonMarketingStreamRequests;
+    use AmazonAttributionRequests;
 
     public const CAMPAIGN_TYPE_SPONSORED_PRODUCTS_FULL = 'sponsoredProducts';
     public const CAMPAIGN_TYPE_SPONSORED_BRANDS_FULL = 'sponsoredBrands';
@@ -213,7 +214,9 @@ class Client
                 if (!empty($params)) {
                     $url .= '?';
                     foreach ($params as $k => $v) {
-                        $url .= "$k=" . rawurlencode($v) . '&';
+                        foreach (is_array($v) ? $v : [$v] as $value) {
+                            $url .= "$k=" . rawurlencode($value) . '&';
+                        }
                     }
                     $url = rtrim($url, '&');
                 }

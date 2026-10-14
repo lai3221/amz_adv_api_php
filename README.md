@@ -29,6 +29,7 @@ Change history V1 (new)<br/>
 Posts V2 (new)<br/>
 Exports (new)<br/>
 Products (new)<br/>
+Amazon Attribution<br/>
 
 ## Requirements
 
@@ -119,6 +120,77 @@ $client->profileId = "1234567890";
 ```
 
 > Once you've set the profile Id you are ready to start making API calls.
+
+## Amazon Attribution
+
+The [Amazon Attribution API reference](https://advertising.amazon.com/API/docs/en-us/amazon-attribution-prod-3p)
+is exposed through `AmazonAttributionRequests`, included in `Client`. These methods
+use the existing regional endpoint, access token and response format. Set
+`$client->profileId` to an authorized advertiser profile before every Attribution
+workflow; all five endpoints require the profile scope header. JSON request headers
+are set for these calls independently of the configured `headerAccept`.
+
+| Method | HTTP endpoint | Purpose |
+| --- | --- | --- |
+| `getAdvertisersByProfile()` | `GET /attribution/advertisers` | List advertisers for the selected profile. |
+| `getPublishers()` | `GET /attribution/publishers` | List publishers and supported tag types. |
+| `getPublisherAttributionTagTemplate(array $data)` | `GET /attribution/tags/macroTag` | Get tags with publisher macros. |
+| `getPublisherMacroAttributionTag(array $data)` | `GET /attribution/tags/nonMacroTemplateTag` | Get templates with placeholders to replace yourself. |
+| `getAttributionTagsByCampaign(array $data)` | `POST /attribution/report` | Retrieve a PERFORMANCE or PRODUCTS report. |
+
+Method names follow the official operation IDs. In particular,
+`getPublisherMacroAttributionTag()` retrieves **non-macro** templates, and
+`getAttributionTagsByCampaign()` retrieves a report.
+
+```PHP
+$client->profileId = '1234567890';
+$advertisers = $client->getAdvertisersByProfile();
+$publishers = $client->getPublishers();
+
+// Use publisher and advertiser IDs returned by the endpoints above.
+$macroTags = $client->getPublisherAttributionTagTemplate([
+    'publisherIds' => ['1', '2'],
+    'advertiserIds' => ['1234567890'],
+]);
+$nonMacroTags = $client->getPublisherMacroAttributionTag([
+    'publisherIds' => ['9'],
+]);
+
+$data = [
+    'advertiserIds' => '1234567890',
+    'startDate' => '20261001',
+    'endDate' => '20261007',
+    'reportType' => 'PERFORMANCE',
+    'groupBy' => 'CAMPAIGN',
+    'metrics' => 'attributedPurchases14d,attributedSales14d',
+    'count' => 100,
+    'cursorId' => null,
+];
+$request = $client->getAttributionTagsByCampaign($data);
+if ($request['success']) {
+    $report = json_decode($request['response'], true);
+    // Read $report['reports']. Pass the returned cursorId unchanged for the next page.
+    if (!empty($report['cursorId'])) {
+        $data['cursorId'] = $report['cursorId'];
+        $nextPage = $client->getAttributionTagsByCampaign($data);
+    }
+}
+```
+
+For tag requests, pass ID lists as arrays. They are encoded as repeated query keys
+(`publisherIds=1&publisherIds=2`), as specified by OpenAPI `form` / `explode: true`.
+Omit `advertiserIds` to request tags for all advertisers associated with the profile.
+For reports, `advertiserIds` and `metrics` are comma-delimited **strings**. Dates use
+`YYYYMMDD`; `count` ranges from 1 to 5000, and `groupBy` supports `CAMPAIGN`,
+`ADGROUP` and `CREATIVE` for PERFORMANCE reports. PRODUCTS reports require a
+`startDate` within the last 90 days. Reports are returned synchronously with
+`reports`, `size` and `cursorId`; no report polling or download is required.
+
+Run the offline Attribution request regression checks with:
+
+```sh
+php tests/amazon_attribution.php
+```
 
 ## Example API Calls
 
