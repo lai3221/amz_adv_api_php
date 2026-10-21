@@ -23,6 +23,7 @@ class Client
     use AssetsRequests;
     use ReportingRequests;
     use AudiencesRequests;
+    use DiscoveryRequests;
     use HistoryRequests;
     use PostsRequests;
     use ExportsRequests;

@@ -25,6 +25,7 @@ Reporting<br/>
 Stores<br/>
 Assets<br/>
 Audiences discovery (new)<br/>
+Targetable entities discovery (new)<br/>
 Change history V1 (new)<br/>
 Posts V2 (new)<br/>
 Exports (new)<br/>
@@ -191,6 +192,53 @@ Run the offline Attribution request regression checks with:
 ```sh
 php tests/amazon_attribution.php
 ```
+
+## Targetable entities discovery
+
+The [Targetable Entities API reference](https://advertising.amazon.com/API/docs/en-us/targetable-entities)
+is exposed through `DiscoveryRequests`, included in `Client`.
+
+| Method | HTTP endpoint | Purpose |
+| --- | --- | --- |
+| `listTargetableEntities(array $data, ?string $accountId = null)` | `POST /targetableEntities/list` | List targetable entities using filters and pagination. |
+| `listTargetableEntityPaths(array $data, ?string $accountId = null)` | `POST /targetableEntities/paths/list` | List direct descendant paths under the requested paths. |
+
+Set `$client->profileId` for profile-scoped requests. Both methods also accept an
+optional second argument for the `Amazon-Advertising-AccountId` header (DSP Rodeo
+entity ID or DSP advertiser account ID). The methods set `Accept` and `Content-Type`
+to `application/vnd.Mindreader.TargetableEntitiesResource.v1+json` for each request.
+
+```PHP
+$client->profileId = '1234567890';
+$data = [
+    'adProduct' => 'SPONSORED_DISPLAY',
+    'locale' => 'en_US',
+    'targetTypeFilter' => ['AUDIENCE'],
+    'searchQueryFilter' => 'Fitness',
+    'maxResults' => 100,
+];
+$request = $client->listTargetableEntities($data);
+if ($request['success']) {
+    $entities = json_decode($request['response'], true);
+    if (!empty($entities['nextToken'])) {
+        $data['nextToken'] = $entities['nextToken'];
+        $nextPage = $client->listTargetableEntities($data);
+    }
+}
+
+$paths = $client->listTargetableEntityPaths([
+    'adProduct' => 'SPONSORED_DISPLAY',
+    'locale' => 'en_US',
+    'pathsFilter' => [['Apps & Games']],
+]);
+```
+
+`adProduct` is required and supports `SPONSORED_BRANDS`, `SPONSORED_DISPLAY`,
+`SPONSORED_PRODUCTS` and `SPONSORED_TELEVISION`. `pathsFilter` is an array of path
+arrays. The entity-list endpoint also supports `parentBrowseNodeIdFilter`,
+`productCategoryIdFilter`, `searchQueryFilter`, `targetTypeFilter`, `maxResults`
+(1-250) and `nextToken`. Pass the returned token unchanged to retrieve the next
+page. The paths endpoint accepts `adProduct`, `locale` and `pathsFilter`.
 
 ## Example API Calls
 
